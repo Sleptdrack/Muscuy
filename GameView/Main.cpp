@@ -1,4 +1,4 @@
-
+﻿
 #include <SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>
 #include <cstdlib>
@@ -10,7 +10,7 @@ using namespace GameModel;
 using namespace GameController;
 using namespace sf;
 unsigned int ancho = 1280, alto = 720;
-unsigned int Ancho = 1000, Alto = 600;
+unsigned int Width = 1000, Heigth = 600;
 //DESTINO DEL SONIDO
 
 RenderWindow window(VideoMode(ancho, alto), "Muscuy");
@@ -269,6 +269,10 @@ namespace GameView {
         void Size(int size) {
             text.setCharacterSize(size);
         }
+        void Draw(sf::RenderTarget& rt_i)const
+        {
+            rt_i.draw(text);
+        }
     };
 
 }
@@ -277,7 +281,7 @@ int main()
     SoundBuffer Buffer;
     //Sonido a cargar
     Sound Sonido;
-    Buffer.loadFromFile("general.wav");
+    Buffer.loadFromFile("SoundTrack/general.wav");
     // SE GUARDARA EL SONIDO EN EL BUFFER LISTO PARA SER USADO
     Sonido.setBuffer(Buffer);
     GameView::Item ListItem[5];
@@ -311,7 +315,29 @@ int main()
     GameView::Word StartNew("Start New Game", 500, 400);
     GameView::Word LoadGame("Load Game", 525, 450);
     Title.Size(100);
-    ///
+    //Tutorial
+    GameView::Word M1("W", 300, 100);
+    GameView::Word M2("A", 250, 150);
+    GameView::Word M3("S", 350, 150);
+    GameView::Word M4("D", 300, 150);
+    GameView::Word M5("MOVEMENT", 225, 200);
+    GameView::Word A1("A", 900, 100);
+    GameView::Word A2("I", 850, 150);
+    GameView::Word A3("B", 950, 150);
+    GameView::Word A4("D", 900, 150);
+    GameView::Word A5("Attack", 875, 200);
+    A1.text.setString(L"▲");
+    A2.text.setString(L"◄");
+    A3.text.setString(L"►");
+    A4.text.setString(L"▼");
+    RectangleShape Door(Vector2f(20, 100));
+    Door.setFillColor(Color::Black);
+    Door.setPosition(Width+140, Heigth / 2);
+    int Tutorial[8];
+    for (int p = 0; p < 8; p++) {
+        Tutorial[p] = 1;
+    }
+    //
     int wall[10],wally[10],pared=0,pared1=0;
     int minion_dead[10];
     int m_hit[10];
@@ -342,7 +368,7 @@ int main()
     //
     while (window.isOpen())
     {
-        Sonido.play();
+        //Sonido.play();
         if (Save.Clk_btn(window)) {
             DB::SaveGame(id, personaje, room);
         }
@@ -354,6 +380,12 @@ int main()
                 state = 3;
                 Interaction::InizialiceRoom(room);
                 //Actualizacion de variables y visualizacion de Minions
+                for (int u = 0; u < 10; u++) {
+                    hit[u] = 0;
+                    V_trp[u].setTexture(Texture_trp);
+                    V_trp[u].setScale((float)0.1, (float)0.072);
+                    V_trp[u].setPosition(room->LTrap[u].X, room->LTrap[u].Y);
+                }
                 for (int u = 0; u < 5; u++) {
                     minion_dead[u] = 0;
                     wall[u] = 0;
@@ -377,6 +409,8 @@ int main()
                     }
                 }
                 personaje.Reset();
+                personaje.X = Width / 2 + 140;
+                personaje.Y = Heigth / 2;
             }
             if (LoadGame.Clk_btn(window)) {
                 state = 2;
@@ -388,12 +422,6 @@ int main()
             window.display();
         }
         else if (state == 1) {
-            for (int u = 0; u < 10; u++) {
-                hit[u] = 0;
-                V_trp[u].setTexture(Texture_trp);
-                V_trp[u].setScale((float)0.1, (float)0.072);
-                V_trp[u].setPosition(room->LTrap[u].X, room->LTrap[u].Y);
-            }
             if (InPause==1) {
                 window.clear();
                 window.draw(Map);
@@ -525,6 +553,51 @@ int main()
             }
 
         }
+        else if (state == 4) {
+            //
+            while (operator<=(time2.getElapsedTime(), milliseconds(5)));
+            time2.restart();
+            //
+            const auto new_tp = std::chrono::steady_clock::now();
+            dt = std::chrono::duration<float>(new_tp - tp).count();
+            tp = new_tp;
+            //
+            //Movimiento del personaje y correspondiente Sprite
+            Action::Move(personaje, dir);
+            VP.SetDirection(dir);
+            VP.Update(dt);
+            VP.sprite.setPosition(personaje.X, personaje.Y);
+            //
+            //Accion de la cadena
+            chain.setPosition(personaje.X, personaje.Y);
+            Rect_chain = chain.getGlobalBounds();
+            Action::Hit(chain, time, &chainT);
+            //
+            if (Action::CompleteTutorial(Tutorial)) {
+                Door.setFillColor(Color::Red);
+                if (Door.getGlobalBounds().intersects(VP.sprite.getGlobalBounds())) {
+                    personaje.X = 140;
+                    state = 1;
+                }
+            }
+            
+            window.clear();
+            M1.Draw(window);
+            M2.Draw(window);
+            M3.Draw(window);
+            M4.Draw(window);
+            M5.Draw(window);
+            A1.Draw(window);
+            A2.Draw(window);
+            A3.Draw(window);
+            A4.Draw(window);
+            A5.Draw(window);
+            window.draw(Door);
+            window.draw(chain);
+            VP.Draw(window);
+            window.display();
+            
+        }
         else if (state == 2 ||state==3) {
             GameView::Word Select("Select Game:", 500, 100);
             GameView::Word Back("Back", 0, 0);
@@ -538,23 +611,39 @@ int main()
                 state = 0;
             }
             if (Game.Clk_btn(window)) {
-                if (state == 2)DB::LoadGame(0, personaje, room);
-                else if (state == 3)DB::SaveGame(0, personaje, room);
-                state = 1;
+                if (state == 2) {
+                    DB::LoadGame(0, personaje, room);
+                    state = 1;
+                }
+                else if (state == 3) {
+                    DB::SaveGame(0, personaje, room);
+                    state = 4;
+                }
                 id = 0;
             }
             if (Game1.Clk_btn(window)) {
                 
-                if (state == 2)DB::LoadGame(1, personaje, room);
-                else if (state == 3)DB::SaveGame(1, personaje, room);
-                state = 1;
+                if (state == 2) {
+                    DB::LoadGame(1, personaje, room);
+                    state = 1;
+                }
+                else if (state == 3) {
+                    DB::SaveGame(1, personaje, room);
+                    state = 4;
+                }
                 id = 1;
             }
             if (Game2.Clk_btn(window)) {
                 
-                if (state == 2)DB::LoadGame(2, personaje, room);
-                else if (state == 3)DB::SaveGame(2, personaje, room);
-                state = 1;
+                if (state == 2) {
+                    DB::LoadGame(2, personaje, room);
+                    state = 1;
+                }
+
+                else if (state == 3) {
+                    DB::SaveGame(2, personaje, room);
+                    state = 4;
+                }
                 id = 2;
             }
             if (R.Clk_btn(window)) {

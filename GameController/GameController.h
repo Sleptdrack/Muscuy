@@ -16,6 +16,7 @@ namespace GameController {
 		static void MinionMove(Minion^ minion,int *wall, int* wally);
 		static void LevelUp(Player& player);
 		static void PickUP(Player& player, Room^ room);
+		static int CompleteTutorial(int t[8]);
 	};
 	public ref class Interaction {
 	public:

@@ -145,6 +145,40 @@ void GameController::Action::PickUP(Player& player, Room^ room)
     }
 }
 
+int GameController::Action::CompleteTutorial(int t[8])
+{
+    if (Keyboard::isKeyPressed(Keyboard::W)) {
+        t[0] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::A)) {
+        t[1] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::S)) {
+        t[2] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::D)) {
+        t[3] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::Up)) {
+        t[4] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::Left)) {
+        t[5] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::Down)) {
+        t[6] = 0;
+    }
+    if (Keyboard::isKeyPressed(Keyboard::Right)) {
+        t[7] = 0;
+    }
+    for (int i = 0; i < 8; i++) {
+        if (t[i] == 1) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 void GameController::Interaction::InizialiceRoom(Room^ Room)
 {
     Room->LTrap->Clear();
