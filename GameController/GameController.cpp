@@ -11,31 +11,31 @@ using namespace System::Xml::Serialization;
 using namespace System::Runtime::Serialization;
 using namespace System::Runtime::Serialization::Formatters::Binary;
 
-void GameController::Action::Move(Player &player, int dir[2])
+void GameController::Action::Move(Player^ player, int dir[2])
 {
     dir[1] = 0;
     dir[0] = 0;
     if (Keyboard::isKeyPressed(Keyboard::W)) {
-        if (player.Y > 120) {
-            player.Y -= player.Speed;
+        if (player->Y > 120) {
+            player->Y -= player->Speed;
         }
         dir[1] -= 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::S)) {
-        if (player.Y < Alto) {
-            player.Y += player.Speed;
+        if (player->Y < Heigth) {
+            player->Y += player->Speed;
         }
         dir[1] += 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::D)) {
-        if (player.X < 140 + Ancho) {
-            player.X += player.Speed;
+        if (player->X < 140 + Width) {
+            player->X += player->Speed;
         }
         dir[0] += 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::A)) {
-        if (player.X > 140) {
-            player.X -= player.Speed;
+        if (player->X > 140) {
+            player->X -= player->Speed;
         }
         dir[0] -= 1;
     }
@@ -100,7 +100,7 @@ void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
         }
     }
     else{
-        if (minion->X < 140+Ancho) {
+        if (minion->X < 140+Width) {
             minion->X += minion->Speed;
         }
         else {
@@ -116,7 +116,7 @@ void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
         }
     }
     else {
-        if (minion->Y < Alto) {
+        if (minion->Y < Heigth) {
             minion->Y += minion->Speed;
         }
         else {
@@ -125,21 +125,22 @@ void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
     }
 
 }
-void GameController::Action::LevelUp(Player& player)
+void GameController::Action::LevelUp(Player^ player)
 {
-    if (player.Exp == 100) {
-        player.Level += 1;
-        player.Health += 20;
-        player.Exp = 0;
+    if (player->Exp == 100) {
+        player->Level += 1;
+        player->Health += 20;
+        player->Exp = 0;
     }
 }
 
-void GameController::Action::PickUP(Player& player, Room^ room)
+void GameController::Action::PickUP(Player^ player, Room^ room)
 {
     for (int i = 0; i < room->LItem->Count; i++) {
-        if ((player.X < (room->LItem[i]->X + room->LItem[i]->Size) && player.X >(room->LItem[i]->X - room->LItem[i]->Size)) && (player.Y < (room->LItem[i]->Y + room->LItem[i]->Size) && player.Y >(room->LItem[i]->Y - room->LItem[i]->Size))) {
-            if (!player.LItem->Contains(room->LItem[i])) {
-                player.LItem->Add(room->LItem[i]);
+        if ((player->X < (room->LItem[i]->X + room->LItem[i]->Size) && player->X >(room->LItem[i]->X - room->LItem[i]->Size)) && (player->Y < (room->LItem[i]->Y + room->LItem[i]->Size) && player->Y >(room->LItem[i]->Y - room->LItem[i]->Size))) {
+            if (room->LItem[i]->Used==0) {
+                player->LItem->Add(room->LItem[i]);
+                room->LItem[i]->Used = 1;
             }
         }
     }
@@ -181,28 +182,29 @@ int GameController::Action::CompleteTutorial(int t[8])
 
 void GameController::Interaction::InizialiceRoom(Room^ Room)
 {
+    Room->LItem->Clear();
     Room->LTrap->Clear();
     Room->LMinion->Clear();
     for (int i = 0; i < 10; i++) {
-        Trap trp((float)(rand() % Ancho + 140), (float)(rand() % (Alto)+80), 40, 20);
+        Trap^ trp = gcnew Trap((float)(rand() % Width + 140), (float)(rand() % (Heigth)+80), 40, 20);
         Room->LTrap->Add(trp);
     }
     for (int i = 0; i < 5; i++) {
-        Minion^ minion = gcnew Minion(10, (float)(rand() % Ancho + 140), (float)(rand() % (Alto)+80), 40, 20, 0, 1);
+        Minion^ minion = gcnew Minion(10, (float)(rand() % Width + 140), (float)(rand() % (Heigth)+80), 40, 20, 0, 1);
         Room->LMinion->Add(minion);
     }
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
-            Health^ health = gcnew Health((float)(rand() % Ancho + 140), (float)(rand() % (Alto)+80), p);
+            Health^ health = gcnew Health((float)(rand() % Width + 140), (float)(rand() % (Heigth)+80), p);
             Room->LItem->Add(health);
         }
         else if (p == 1) {
-            Velocity^ velocity = gcnew Velocity((float)(rand() % Ancho + 140), (float)(rand() % (Alto)+80), p);
+            Velocity^ velocity = gcnew Velocity((float)(rand() % Width + 140), (float)(rand() % (Heigth)+80), p);
             Room->LItem->Add(velocity);
         }
         else if (p == 2) {
-            Attack^ attack = gcnew Attack((float)(rand() % Ancho + 140), (float)(rand() % (Alto)+80), p);
+            Attack^ attack = gcnew Attack((float)(rand() % Width + 140), (float)(rand() % (Heigth)+80), p);
             Room->LItem->Add(attack);
         }
     }
@@ -218,56 +220,84 @@ int GameController::Interaction::RoomCleared(Room^ room)
     return 1;
 
 }
-void GameController::Interaction::UseItem(Player& player)
+void GameController::Interaction::InizialiceFloor(Floor^ Level)
 {
-    for (int i = 0; i < player.LItem->Count; i++) {
-        if (player.LItem[i]->Used == 0) {
-            if (player.LItem[i]->Type == 0) {
-                player.Health += 20;
-                player.LItem[i]->Used = 1;
-            }
-            else if (player.LItem[i]->Type == 1) {
-                player.Speed += 1;
-                player.LItem[i]->Used = 1;
-            }
-            else if (player.LItem[i]->Type == 2) {
-                player.Attack += 5;
-                player.LItem[i]->Used = 1;
+    
+    Level->LRoom->Clear();
+    for (int i = 0; i < 9; i++) {
+        Room^ room = gcnew Room;
+        GameController::Interaction::InizialiceRoom(room);
+        Level->LRoom->Add(room);
+    }
+}
+
+void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int state)
+{
+    RectangleShape Door(Vector2f(20, 100));
+    Door.setFillColor(Color::Black);
+    Door.setPosition(Width + 140, Heigth / 2);
+    if (RoomCleared(Level->LRoom[player->CurrentRoom])) {
+        if (player->CurrentRoom < 9) {
+            Door.setFillColor(Color::Red);
+            if (Door.getGlobalBounds().contains(player->X, player->Y)) {
+                player->X = 140;
+                player->CurrentRoom += 1;
+                state = 5;
             }
         }
     }
 }
-void GameController::Interaction::GetHit(Player& player, Trap& trp,int *hit)
+
+void GameController::Interaction::UseItem(Player^ player)
 {
-    if ((player.X < (trp.X + trp.Size) && player.X >(trp.X - trp.Size)) && (player.Y < (trp.Y + trp.Size) && player.Y >(trp.Y - trp.Size))){
+    for (int i = 0; i < player->LItem->Count; i++) {
+        if (player->LItem[i]->Used == 0) {
+            if (player->LItem[i]->Type == 0) {
+                player->Health += 20;
+                player->LItem[i]->Used = 1;
+            }
+            else if (player->LItem[i]->Type == 1) {
+                player->Speed += 1;
+                player->LItem[i]->Used = 1;
+            }
+            else if (player->LItem[i]->Type == 2) {
+                player->Attack += 5;
+                player->LItem[i]->Used = 1;
+            }
+        }
+    }
+}
+void GameController::Interaction::GetHit(Player^ player, Trap^ trp,int *hit)
+{
+    if ((player->X < (trp->X + trp->Size) && player->X >(trp->X - trp->Size)) && (player->Y < (trp->Y + trp->Size) && player->Y >(trp->Y - trp->Size))){
         if (*hit == 0) {
-            player.Health -= trp.Damage;
+            player->Health -= trp->Damage;
             *hit = 1;
         }
 
     }
     if (*hit == 1) {
-        if (!((player.X < (trp.X + trp.Size) && player.X > (trp.X - trp.Size)) && (player.Y < (trp.Y + trp.Size) && player.Y > (trp.Y - trp.Size)))) {
+        if (!((player->X < (trp->X + trp->Size) && player->X > (trp->X - trp->Size)) && (player->Y < (trp->Y + trp->Size) && player->Y > (trp->Y - trp->Size)))) {
             *hit = 0;
         }
     }
 }
-void GameController::Interaction::FightMinion(Player& player, sf::Sprite& chain, Minion^ minion,int *hit)
+void GameController::Interaction::FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion,int *hit)
 {
-    if ((player.X < (minion->X + minion->Size) && player.X >(minion->X - minion->Size)) && (player.Y < (minion->Y + minion->Size) && player.Y >(minion->Y - minion->Size))) {
+    if ((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size))) {
         if (*hit == 0) {
-            player.Health -= minion->Attack;
+            player->Health -= minion->Attack;
             *hit = 1;
         }
 
     }
     if (*hit == 1) {
-        if (!((player.X < (minion->X + minion->Size) && player.X >(minion->X - minion->Size)) && (player.Y < (minion->Y + minion->Size) && player.Y >(minion->Y - minion->Size)))) {
+        if (!((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size)))) {
             *hit = 0;
         }
     }
     if (chain.getGlobalBounds().contains(minion->X, minion->Y)) {
-        minion->Health -= player.Attack;
+        minion->Health -= player->Attack;
     }
 }
 
@@ -278,25 +308,27 @@ void GameController::DB::SavePlayer()
     bFormatter->Serialize(stream, playerDB->ListDB);
     stream->Close();
 }
-void GameController::DB::SaveRoom()
+void GameController::DB::SaveFloor()
 {
-    Stream^ stream = File::Open("rooms.bin", FileMode::Create);
+    Stream^ stream = File::Open("floor.bin", FileMode::Create);
     BinaryFormatter^ bFormatter = gcnew BinaryFormatter();
-    bFormatter->Serialize(stream, roomDB->ListDB);
+    bFormatter->Serialize(stream, floorDB->ListDB);
     stream->Close();
 }
-void GameController::DB::SaveGame(int id,Player& player, Room^ room)
+void GameController::DB::SaveGame(int id,Player^ player, Floor^ floor)
 {
-    if (roomDB->ListDB->Count <= id) {
+    player->Id = id;
+    floor->Id = id;
+    if (floorDB->ListDB->Count <= id) {
         playerDB->ListDB->Add(player);
-        roomDB->ListDB->Add(room);
+        floorDB->ListDB->Add(floor);
     }
     else {
         playerDB->ListDB[id] = player;
-        roomDB->ListDB[id] = room;
+        floorDB->ListDB[id] = floor;
     }
     SavePlayer();
-    SaveRoom();
+    SaveFloor();
 }
 int GameController::DB::Length()
 {
@@ -304,40 +336,47 @@ int GameController::DB::Length()
 }
 void GameController::DB::Remove(int id)
 {
-    playerDB->ListDB->RemoveAt(id - 1);
-    roomDB->ListDB->RemoveAt(id - 1);
+    playerDB->ListDB->RemoveAt(id);
+    floorDB->ListDB->RemoveAt(id);
 }
 void GameController::DB::LoadPlayer()
 {
     if (File::Exists("players.bin")) {
         Stream^ stream = File::Open("players.bin", FileMode::Open);
         BinaryFormatter^ bFormatter = gcnew BinaryFormatter();
-        playerDB->ListDB = (List <Player>^) bFormatter->Deserialize(stream);
+        playerDB->ListDB = (List <Player^>^) bFormatter->Deserialize(stream);
         stream->Close();
     }
 }
-void GameController::DB::LoadRoom()
+void GameController::DB::LoadFloor()
 {
-    if (File::Exists("rooms.bin")) {
-        Stream^ stream = File::Open("rooms.bin", FileMode::Open);
+    if (File::Exists("floor.bin")) {
+        Stream^ stream = File::Open("floor.bin", FileMode::Open);
         BinaryFormatter^ bFormatter = gcnew BinaryFormatter();
-        roomDB->ListDB = (List <Room^>^) bFormatter->Deserialize(stream);
+        floorDB->ListDB = (List <Floor^>^) bFormatter->Deserialize(stream);
         stream->Close();
     }
 }
 
-void GameController::DB::LoadGame(int id,Player& player,Room^ room)
+void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
 {
-    LoadRoom();
+    LoadFloor();
     LoadPlayer();
-    player = playerDB->ListDB[id];
-    room = roomDB->ListDB[id];
+    for (int i = 0; i < playerDB->ListDB->Count; i++) {
+        if (playerDB->ListDB[i]->Id == id) {
+            player = playerDB->ListDB[i];
+        }
+        if (floorDB->ListDB[i]->Id == id) {
+            room = floorDB->ListDB[i];
+        }
+    }
+    
 }
 
 GameController::PlayerDB::PlayerDB()
 {
 }
 
-GameController::RoomDB::RoomDB()
+GameController::FloorDB::FloorDB()
 {
 }

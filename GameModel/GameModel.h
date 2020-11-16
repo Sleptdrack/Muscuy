@@ -42,8 +42,9 @@ namespace GameModel {
 		Velocity(float x, float y, int type);
 	};
 	[Serializable]
-	public value class Player{
+	public ref class Player{
 	public:
+		property int Id;
 		property int Health;
 		property float X;
 		property float Y;
@@ -53,12 +54,13 @@ namespace GameModel {
 		property int Exp;
 		property int Level;
 		property int Furypoints;
+		property int CurrentRoom;
 		property List<Item^>^ LItem;
-		Player(int health, float x, float y, double attack, double attackspeed, float speed, int exp, int level, int furypoints);
+		Player(int id, int health, float x, float y, double attack, double attackspeed, float speed, int exp, int level, int furypoints);
 		void Reset();
 	};
 	[Serializable]
-	public value class Trap {
+	public ref class Trap {
 	public:
 		property float X;
 		property float Y;
@@ -81,11 +83,10 @@ namespace GameModel {
 	[Serializable]
 	public ref class Room {
 	public:
-		property int Size;
-		property List<Trap>^ LTrap;
+		property List<Trap^>^ LTrap;
 		property List<Minion^>^ LMinion;
 		property List<Item^>^ LItem;
-		Room(int Size);
+		Room();
 	};
 	[Serializable]
 	public ref class Boss {
@@ -99,18 +100,18 @@ namespace GameModel {
 		Boss(int health, float x, float y, double attack, double attackspeed, float speed);
 	};
 	[Serializable]
-	public ref class Level {
+	public ref class Floor {
 	public:
-		property int Floor;
+		property int Id;
 		property List<Room^>^ LRoom;
 		property Boss^ LBoss;
-		Level(int floor, Boss^lBoss);
+		Floor(Boss^lBoss);
 	};
 	[Serializable]
 	public ref class Game {
 	public:
 		property int Difficulty;
-		property List<Level^>^ LLevel;
+		property List<Floor^>^ LLevel;
 		Game(int difficulty);
 	};
 

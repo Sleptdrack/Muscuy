@@ -278,6 +278,7 @@ namespace GameView {
 }
 int main()
 {
+    
     SoundBuffer Buffer;
     //Sonido a cargar
     Sound Sonido;
@@ -341,7 +342,6 @@ int main()
     int wall[10],wally[10],pared=0,pared1=0;
     int minion_dead[10];
     int m_hit[10];
-    Minion minion(100, 200, 200,50, 10, 0, 1);
     Sprite V_minion[10];
     Texture T_minion;
     T_minion.loadFromFile("Imagenes/Personaje2.png");
@@ -351,13 +351,25 @@ int main()
     int chainT=2;
     //Creacion y ubicacion de una trampa
     int hit[10];
-    Room^ room = gcnew Room(5);
     Sprite V_trp[10];
     Texture Texture_trp;
     Texture_trp.loadFromFile("Imagenes/spike.png");
     //Actualizacion de variables y visualizacion de trampas
     //
-    Player personaje(100, 140, 140, 20, 1, 1, 0, 1, 1);
+    for (int u = 0; u < 10; u++) {
+        V_trp[u].setTexture(Texture_trp);
+        V_trp[u].setScale((float)0.1, (float)0.072);
+    }
+    for (int u = 0; u < 5; u++) {
+        V_minion[u].setTexture(T_minion);
+        V_minion[u].setScale(0.5, 0.5);
+    }
+    //
+    Boss^ boss = gcnew Boss(100, 200, 200, 100, 0, 1);
+    Floor^ floor = gcnew Floor(boss);
+    //
+    int Done = 0;
+    Player^ personaje= gcnew Player(0,100, 140, 140, 20, 1, 1, 0, 1, 1);
     GameView::Character VP({ 140.f,140.f });
     Sprite chain;
     Texture tchain;
@@ -370,7 +382,7 @@ int main()
     {
         //Sonido.play();
         if (Save.Clk_btn(window)) {
-            DB::SaveGame(id, personaje, room);
+            DB::SaveGame(id, personaje, floor);
         }
         if (Menu.Clk_btn(window)) {
             state = 0;
@@ -378,39 +390,15 @@ int main()
         if (state == 0) {
             if (StartNew.Clk_btn(window)) {
                 state = 3;
-                Interaction::InizialiceRoom(room);
+                Interaction::InizialiceFloor(floor);
                 //Actualizacion de variables y visualizacion de Minions
-                for (int u = 0; u < 10; u++) {
-                    hit[u] = 0;
-                    V_trp[u].setTexture(Texture_trp);
-                    V_trp[u].setScale((float)0.1, (float)0.072);
-                    V_trp[u].setPosition(room->LTrap[u].X, room->LTrap[u].Y);
+                for (int u = 0; u < 8; u++) {
+                    Tutorial[u] = 1;
                 }
-                for (int u = 0; u < 5; u++) {
-                    minion_dead[u] = 0;
-                    wall[u] = 0;
-                    wally[u] = 0;
-                    m_hit[u] = 0;
-                    V_minion[u].setTexture(T_minion);
-                    V_minion[u].setScale(0.5, 0.5);
-                }
-                for (int u = 0; u < 5; u++) {
-                    if (room->LItem[u]->Type == 0) {
-                        ListItem[u] = H;
-                        ListItem[u].SetPosition(room->LItem[u]->X, room->LItem[u]->Y);
-                    }
-                    else if (room->LItem[u]->Type == 2) {
-                        ListItem[u] = D;
-                        ListItem[u].SetPosition(room->LItem[u]->X, room->LItem[u]->Y);
-                    }
-                    else if (room->LItem[u]->Type == 1) {
-                        ListItem[u] = V;
-                        ListItem[u].SetPosition(room->LItem[u]->X, room->LItem[u]->Y);
-                    }
-                }
-                personaje.Reset();
-                personaje.X = Width / 2 + 140;
-                personaje.Y = Heigth / 2;
+                Door.setFillColor(Color::Black);
+                personaje->Reset();
+                personaje->X = Width / 2 + 140;
+                personaje->Y = Heigth / 2;
             }
             if (LoadGame.Clk_btn(window)) {
                 state = 2;
@@ -430,7 +418,10 @@ int main()
 
                 }
                 for (int i = 0; i < 5; i++) {
-                    if (room->LMinion[i]->Health > 0) {
+                    ListItem[i].Draw(window);
+                }
+                for (int i = 0; i < 5; i++) {
+                    if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
                         window.draw(V_minion[i]);
                     }
                 }
@@ -454,32 +445,32 @@ int main()
                     while (Pause.Clk_btn(window));
                     InPause = 1;
                 }
-                if (personaje.Health > 0) {
+                if (personaje->Health > 0) {
                     while (operator<=(time2.getElapsedTime(), milliseconds(5)));
                     time2.restart();
                     //Visualizacion de vida
-                    Live.UpdateString(health.replace(8, 3, (std::to_string(personaje.Health))));
-                    Exp.UpdateString(expp.replace(5, 3, std::to_string(personaje.Exp)));
-                    Level.UpdateString(level.replace(7, 3, std::to_string(personaje.Level)));
-                    FP.UpdateString(fp.replace(11, 3, std::to_string(DB::Length())));
+                    Live.UpdateString(health.replace(8, 3, (std::to_string(personaje->Health))));
+                    Exp.UpdateString(expp.replace(5, 3, std::to_string(personaje->Exp)));
+                    Level.UpdateString(level.replace(7, 3, std::to_string(personaje->Level)));
+                    FP.UpdateString(fp.replace(11, 3, std::to_string(floor->LRoom[7]->LMinion[3]->Health)));
                     //Coleccion de Objetos
-                    Action::PickUP(personaje, room);
+                    Action::PickUP(personaje, floor->LRoom[personaje->CurrentRoom]);
                     Interaction::UseItem(personaje);
                     //Colision con trampas:
                     Action::LevelUp(personaje);
                     for (int i = 0; i < 5; i++) {
-                        Action::MinionMove(room->LMinion[i], &wall[i], &wally[i]);
-                        V_minion[i].setPosition(room->LMinion[i]->X, room->LMinion[i]->Y);
-                        if (room->LMinion[i]->Health > 0) {
-                            Interaction::FightMinion(personaje, chain, room->LMinion[i], &m_hit[i]);
+                        Action::MinionMove(floor->LRoom[personaje->CurrentRoom]->LMinion[i], &wall[i], &wally[i]);
+                        V_minion[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[i]->X, floor->LRoom[0]->LMinion[i]->Y);
+                        if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
+                            Interaction::FightMinion(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LMinion[i], &m_hit[i]);
                         }
                         else if (minion_dead[i] == 0) {
                             minion_dead[i] = 1;
-                            personaje.Exp += 20;
+                            personaje->Exp += 20;
                         }
                     }
                     for (int i = 0; i < 10; i++) {
-                        Interaction::GetHit(personaje, room->LTrap[i], &hit[i]);
+                        Interaction::GetHit(personaje, floor->LRoom[personaje->CurrentRoom]->LTrap[i], &hit[i]);
                     }
                     const auto new_tp = std::chrono::steady_clock::now();
                     dt = std::chrono::duration<float>(new_tp - tp).count();
@@ -489,13 +480,17 @@ int main()
                     Action::Move(personaje, dir);
                     VP.SetDirection(dir);
                     VP.Update(dt);
-                    VP.sprite.setPosition(personaje.X, personaje.Y);
+                    VP.sprite.setPosition(personaje->X, personaje->Y);
                     //
                     //Accion de la cadena
-                    chain.setPosition(personaje.X, personaje.Y);
+                    chain.setPosition(personaje->X, personaje->Y);
                     Rect_chain = chain.getGlobalBounds();
                     Action::Hit(chain, time, &chainT);
                     //
+                    //Cambiar Cuarto
+                    if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
+                        Interaction::ChangeRoom(floor, personaje, state);
+                    }
                     window.clear();
                     window.draw(Map);
                     for (int o = 0; o < 10; o++) {
@@ -503,14 +498,17 @@ int main()
 
                     }
                     for (int i = 0; i < 5; i++) {
-                        if (room->LMinion[i]->Health > 0) {
-                            window.draw(V_minion[i]);
+                        if (floor->LRoom[personaje->CurrentRoom]->LItem[i]->Used == 0) {
+                            ListItem[i].Draw(window);
                         }
                     }
                     for (int i = 0; i < 5; i++) {
-                        if (room->LItem[i]->Used == 0) {
-                            ListItem[i].Draw(window);
+                        if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
+                            window.draw(V_minion[i]);
                         }
+                    }
+                    if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
+                        window.draw(Door);
                     }
                     window.draw(Exp.text);
                     window.draw(Live.text);
@@ -525,24 +523,12 @@ int main()
                 }
                 else {
                     if (Btn.Clk_btn(window)) {
-                        Interaction::InizialiceRoom(room);
-                        for (int u = 0; u < 10; u++) {
-                            hit[u] = 0;
-                            V_trp[u].setTexture(Texture_trp);
-                            V_trp[u].setScale((float)0.1, (float)0.072);
-                            V_trp[u].setPosition(room->LTrap[u].X, room->LTrap[u].Y);
-                        }
-                        //Actualizacion de variables y visualizacion de Minions
-                        for (int u = 0; u < 5; u++) {
-                            minion_dead[u] = 0;
-                            wall[u] = 0;
-                            wally[u] = 0;
-                            m_hit[u] = 0;
-                            V_minion[u].setTexture(T_minion);
-                            V_minion[u].setScale(0.5, 0.5);
-                        }
                         //clase con ref y agregar clase spritey texture
-                        personaje.Reset();
+                        Interaction::InizialiceFloor(floor);
+                        personaje->Reset();
+                        personaje->X = Width / 2 + 140;
+                        personaje->Y = Heigth / 2;
+                        state = 5;
                     }
                     window.clear();
                     window.draw(Loss.text);
@@ -566,18 +552,18 @@ int main()
             Action::Move(personaje, dir);
             VP.SetDirection(dir);
             VP.Update(dt);
-            VP.sprite.setPosition(personaje.X, personaje.Y);
+            VP.sprite.setPosition(personaje->X, personaje->Y);
             //
             //Accion de la cadena
-            chain.setPosition(personaje.X, personaje.Y);
+            chain.setPosition(personaje->X, personaje->Y);
             Rect_chain = chain.getGlobalBounds();
             Action::Hit(chain, time, &chainT);
             //
             if (Action::CompleteTutorial(Tutorial)) {
                 Door.setFillColor(Color::Red);
                 if (Door.getGlobalBounds().intersects(VP.sprite.getGlobalBounds())) {
-                    personaje.X = 140;
-                    state = 1;
+                    personaje->X = 140;
+                    state = 5;
                 }
             }
             
@@ -612,11 +598,11 @@ int main()
             }
             if (Game.Clk_btn(window)) {
                 if (state == 2) {
-                    DB::LoadGame(0, personaje, room);
-                    state = 1;
+                    DB::LoadGame(0, personaje, floor);
+                    state = 5;
                 }
                 else if (state == 3) {
-                    DB::SaveGame(0, personaje, room);
+                    DB::SaveGame(0, personaje, floor);
                     state = 4;
                 }
                 id = 0;
@@ -624,11 +610,11 @@ int main()
             if (Game1.Clk_btn(window)) {
                 
                 if (state == 2) {
-                    DB::LoadGame(1, personaje, room);
-                    state = 1;
+                    DB::LoadGame(1, personaje, floor);
+                    state = 5;
                 }
                 else if (state == 3) {
-                    DB::SaveGame(1, personaje, room);
+                    DB::SaveGame(1, personaje, floor);
                     state = 4;
                 }
                 id = 1;
@@ -636,12 +622,12 @@ int main()
             if (Game2.Clk_btn(window)) {
                 
                 if (state == 2) {
-                    DB::LoadGame(2, personaje, room);
-                    state = 1;
+                    DB::LoadGame(2, personaje, floor);
+                    state = 5;
                 }
 
                 else if (state == 3) {
-                    DB::SaveGame(2, personaje, room);
+                    DB::SaveGame(2, personaje, floor);
                     state = 4;
                 }
                 id = 2;
@@ -668,6 +654,37 @@ int main()
             window.draw(Game1.text);
             window.draw(Game2.text);
             window.display();
+        }
+        else if (state == 5) {
+            for (int u = 0; u < 10; u++) {
+                hit[u] = 0;
+                V_trp[u].setTexture(Texture_trp);
+                V_trp[u].setScale((float)0.1, (float)0.072);
+                V_trp[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LTrap[u]->X, floor->LRoom[personaje->CurrentRoom]->LTrap[u]->Y);
+            }
+            for (int u = 0; u < 5; u++) {
+                minion_dead[u] = 0;
+                wall[u] = 0;
+                wally[u] = 0;
+                m_hit[u] = 0;
+                V_minion[u].setTexture(T_minion);
+                V_minion[u].setScale(0.5, 0.5);
+            }
+            for (int u = 0; u < 5; u++) {
+                if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 0) {
+                    ListItem[u] = H;
+                    ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
+                }
+                else if (floor->LRoom[0]->LItem[u]->Type == 2) {
+                    ListItem[u] = D;
+                    ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
+                }
+                else if (floor->LRoom[0]->LItem[u]->Type == 1) {
+                    ListItem[u] = V;
+                    ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
+                }
+            }
+            state = 1;
         }
 
         Event event;

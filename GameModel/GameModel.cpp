@@ -6,11 +6,11 @@
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace sf;
-GameModel::Player::Player(/*sf::Sprite vp, */int health, float x, float y, double attack, double attackSpeed, float speed, int exp, int level, int furypoints)
+GameModel::Player::Player(int id,int health, float x, float y, double attack, double attackSpeed, float speed, int exp, int level, int furypoints)
 {
-	//this->VP = vp;
-	//this->Texture_VP.loadFromFile("Imagenes/Personaje2.png");
-	//this->VP.setTexture(Texture_VP);
+
+	this->Id = id;
+	this->CurrentRoom = 0;
 	this->Health = health;
 	this->X = x;
 	this->Y = y;
@@ -34,6 +34,7 @@ void GameModel::Player::Reset()
 	this->Exp = 0;
 	this->Level = 1;
 	this->Furypoints = 0;
+	this->CurrentRoom = 0;
 }
 
 GameModel::Trap::Trap(float x, float y,float size,int damage)
@@ -55,10 +56,10 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Speed = speed;
 }
 
-GameModel::Room::Room(int Size)
+GameModel::Room::Room()
 {
-	this->Size;
-	this->LTrap = gcnew List<Trap>();
+
+	this->LTrap = gcnew List<Trap^>();
 	this->LMinion = gcnew List<Minion^>();
 	this->LItem = gcnew List<Item^>();
 }
@@ -74,9 +75,9 @@ GameModel::Boss::Boss(int health, float x, float y, double attack, double attack
 	this->Speed = speed;
 }
 
-GameModel::Level::Level(int floor, Boss^lboss)
+GameModel::Floor::Floor(Boss^lboss)
 {
-	this->Floor = floor;
+	this->Id = 0;
 	this->LRoom = gcnew List<Room^>();
 	this->LBoss = lboss;
 }
@@ -84,7 +85,7 @@ GameModel::Level::Level(int floor, Boss^lboss)
 GameModel::Game::Game(int difficulty)
 {
 	this->Difficulty = difficulty;
-	this->LLevel = gcnew List<Level^>();
+	this->LLevel = gcnew List<Floor^>();
 }
 
 GameModel::Health::Health(float x, float y, int type)
