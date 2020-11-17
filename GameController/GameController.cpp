@@ -139,7 +139,19 @@ void GameController::Action::PickUP(Player^ player, Room^ room)
     for (int i = 0; i < room->LItem->Count; i++) {
         if ((player->X < (room->LItem[i]->X + room->LItem[i]->Size) && player->X >(room->LItem[i]->X - room->LItem[i]->Size)) && (player->Y < (room->LItem[i]->Y + room->LItem[i]->Size) && player->Y >(room->LItem[i]->Y - room->LItem[i]->Size))) {
             if (room->LItem[i]->Used==0) {
-                player->LItem->Add(room->LItem[i]);
+                int p = room->LItem[i]->Type;
+                if (p == 0) {
+                    Health^ health = gcnew Health(room->LItem[i]->X, room->LItem[i]->Y, p);
+                    player->LItem->Add(health);
+                }
+                else if (p == 1) {
+                    Velocity^ velocity = gcnew Velocity(room->LItem[i]->X, room->LItem[i]->Y, p);
+                    player->LItem->Add(velocity);
+                }
+                else if (p == 2) {
+                    Attack^ attack = gcnew Attack(room->LItem[i]->X, room->LItem[i]->Y, p);
+                    player->LItem->Add(attack);
+                }
                 room->LItem[i]->Used = 1;
             }
         }
@@ -222,7 +234,7 @@ int GameController::Interaction::RoomCleared(Room^ room)
 }
 void GameController::Interaction::InizialiceFloor(Floor^ Level)
 {
-    
+
     Level->LRoom->Clear();
     for (int i = 0; i < 9; i++) {
         Room^ room = gcnew Room;
