@@ -452,7 +452,7 @@ int main()
                     Live.UpdateString(health.replace(8, 3, (std::to_string(personaje->Health))));
                     Exp.UpdateString(expp.replace(5, 3, std::to_string(personaje->Exp)));
                     Level.UpdateString(level.replace(7, 3, std::to_string(personaje->Level)));
-                    FP.UpdateString(fp.replace(11, 3, std::to_string(floor->LRoom[7]->LMinion[3]->Health)));
+                    FP.UpdateString(fp.replace(11, 3, std::to_string(floor->LRoom[2]->LMinion[3]->Health)));
                     //Coleccion de Objetos
                     Action::PickUP(personaje, floor->LRoom[personaje->CurrentRoom]);
                     Interaction::UseItem(personaje);
@@ -489,7 +489,7 @@ int main()
                     //
                     //Cambiar Cuarto
                     if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
-                        Interaction::ChangeRoom(floor, personaje, state);
+                        Interaction::ChangeRoom(floor, personaje, &state);
                     }
                     window.clear();
                     window.draw(Map);
@@ -658,6 +658,7 @@ int main()
         else if (state == 5) {
             for (int u = 0; u < 10; u++) {
                 hit[u] = 0;
+                V_trp[u];
                 V_trp[u].setTexture(Texture_trp);
                 V_trp[u].setScale((float)0.1, (float)0.072);
                 V_trp[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LTrap[u]->X, floor->LRoom[personaje->CurrentRoom]->LTrap[u]->Y);

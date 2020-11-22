@@ -56,9 +56,9 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Speed = speed;
 }
 
-GameModel::Room::Room()
+GameModel::Room::Room(int id)
 {
-
+	this->Id = id;
 	this->LTrap = gcnew List<Trap^>();
 	this->LMinion = gcnew List<Minion^>();
 	this->LItem = gcnew List<Item^>();

@@ -237,13 +237,13 @@ void GameController::Interaction::InizialiceFloor(Floor^ Level)
 
     Level->LRoom->Clear();
     for (int i = 0; i < 9; i++) {
-        Room^ room = gcnew Room;
+        Room^ room = gcnew Room(i);
         GameController::Interaction::InizialiceRoom(room);
         Level->LRoom->Add(room);
     }
 }
 
-void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int state)
+void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int *state)
 {
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
@@ -254,7 +254,9 @@ void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int st
             if (Door.getGlobalBounds().contains(player->X, player->Y)) {
                 player->X = 140;
                 player->CurrentRoom += 1;
-                state = 5;
+                *state = 5;
+                DB::SaveGame(player->Id, player, Level);
+                DB::LoadGame(player->Id, player, Level);
             }
         }
     }

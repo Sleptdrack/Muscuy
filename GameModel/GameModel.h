@@ -83,10 +83,11 @@ namespace GameModel {
 	[Serializable]
 	public ref class Room {
 	public:
+		property int Id;
 		property List<Trap^>^ LTrap;
 		property List<Minion^>^ LMinion;
 		property List<Item^>^ LItem;
-		Room();
+		Room(int id);
 	};
 	[Serializable]
 	public ref class Boss {

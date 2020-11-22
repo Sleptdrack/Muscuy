@@ -23,7 +23,7 @@ namespace GameController {
 		static void InizialiceRoom(Room^ Room);
 		static int RoomCleared(Room^ room);
 		static void InizialiceFloor(Floor^ Level);
-		static void ChangeRoom(Floor^ Level,Player^ player,int state);
+		static void ChangeRoom(Floor^ Level,Player^ player,int *state);
 		static void UseItem(Player^ player);
 		static void GetHit(Player^ player, Trap^ trp,int *hit);
 		static void FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion,int *hit);
