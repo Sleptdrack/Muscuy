@@ -658,7 +658,6 @@ int main()
         else if (state == 5) {
             for (int u = 0; u < 10; u++) {
                 hit[u] = 0;
-                V_trp[u];
                 V_trp[u].setTexture(Texture_trp);
                 V_trp[u].setScale((float)0.1, (float)0.072);
                 V_trp[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LTrap[u]->X, floor->LRoom[personaje->CurrentRoom]->LTrap[u]->Y);
@@ -672,6 +671,7 @@ int main()
                 V_minion[u].setScale(0.5, 0.5);
             }
             for (int u = 0; u < 5; u++) {
+                ListItem[u].;
                 if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 0) {
                     ListItem[u] = H;
                     ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
