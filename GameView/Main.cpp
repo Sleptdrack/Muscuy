@@ -671,7 +671,6 @@ int main()
                 V_minion[u].setScale(0.5, 0.5);
             }
             for (int u = 0; u < 5; u++) {
-                ListItem[u].;
                 if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 0) {
                     ListItem[u] = H;
                     ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
