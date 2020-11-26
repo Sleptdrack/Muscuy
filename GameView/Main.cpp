@@ -276,6 +276,7 @@ namespace GameView {
     };
 
 }
+
 int main()
 {
     
@@ -378,6 +379,13 @@ int main()
     chain.setTexture(tchain);
     chain.setScale((float)0.05, (float)0.05);
     //
+    
+    SoundBuffer Buffer;
+    Sound Sonido;
+    Buffer.loadFromFile("SoundTrack/fondo.wav");
+    Sonido.setBuffer(Buffer);
+    Sonido.play();
+    
     while (window.isOpen())
     {
         //Sonido.play();
