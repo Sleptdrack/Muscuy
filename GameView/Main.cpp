@@ -297,8 +297,9 @@ int main()
     Clock time2;
     Texture T_Map;
     Sprite Map;
-    T_Map.loadFromFile("Imagenes/Mapa.jpeg");
+    T_Map.loadFromFile("Imagenes/Mapa.png");
     Map.setTexture(T_Map);
+    Map.setPosition(0, 0);
     int flag = 0;
     Vector2i M;
     //texto;
@@ -380,11 +381,11 @@ int main()
     chain.setScale((float)0.05, (float)0.05);
     //
     
-    SoundBuffer Buffer;
+    /*SoundBuffer Buffer;
     Sound Sonido;
     Buffer.loadFromFile("SoundTrack/fondo.wav");
     Sonido.setBuffer(Buffer);
-    Sonido.play();
+    Sonido.play();*/
     
     while (window.isOpen())
     {
@@ -467,8 +468,8 @@ int main()
                     //Colision con trampas:
                     Action::LevelUp(personaje);
                     for (int i = 0; i < 5; i++) {
-                        Action::MinionMove(floor->LRoom[personaje->CurrentRoom]->LMinion[i], &wall[i], &wally[i]);
-                        V_minion[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[i]->X, floor->LRoom[0]->LMinion[i]->Y);
+                        Action::MinionMove(floor->LRoom[personaje->CurrentRoom]->LMinion[i]);
+                        V_minion[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[i]->X, floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Y);
                         if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
                             Interaction::FightMinion(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LMinion[i], &m_hit[i]);
                         }
@@ -672,11 +673,10 @@ int main()
             }
             for (int u = 0; u < 5; u++) {
                 minion_dead[u] = 0;
-                wall[u] = 0;
-                wally[u] = 0;
                 m_hit[u] = 0;
                 V_minion[u].setTexture(T_minion);
                 V_minion[u].setScale(0.5, 0.5);
+                V_minion[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[u]->X, floor->LRoom[personaje->CurrentRoom]->LMinion[u]->Y);
             }
             for (int u = 0; u < 5; u++) {
                 if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 0) {

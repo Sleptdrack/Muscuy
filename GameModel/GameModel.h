@@ -78,6 +78,8 @@ namespace GameModel {
 		property double Attack;
 		property double AttackSpeed;
 		property int Speed;
+		property int Wall;
+		property int Wally;
 		Minion(int health, float x, float y,float size,int attack, double attackspeed, int speed);
 	};
 	[Serializable]

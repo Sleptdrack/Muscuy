@@ -13,7 +13,7 @@ namespace GameController {
 	public:
 		static void Move(Player^ player, int dir[2]);
 		static void Hit(sf::Sprite &chain,sf::Clock &time,int *chainT);
-		static void MinionMove(Minion^ minion,int *wall, int* wally);
+		static void MinionMove(Minion^ minion);
 		static void LevelUp(Player^ player);
 		static void PickUP(Player^ player, Room^ room);
 		static int CompleteTutorial(int t[8]);

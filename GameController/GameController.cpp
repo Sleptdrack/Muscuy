@@ -89,14 +89,14 @@ void GameController::Action::Hit(sf::Sprite &chain, sf::Clock &time, int *chainT
         chain.rotate(180);
     }
 }
-void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
+void GameController::Action::MinionMove(Minion^ minion)
 {
-    if (*wall == 0) {
+    if (minion->Wall == 0) {
         if (minion->X >= 140) {
             minion->X-=minion->Speed;
         }
         else {
-            *wall = 1;
+            minion->Wall = 1;
         }
     }
     else{
@@ -104,15 +104,15 @@ void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
             minion->X += minion->Speed;
         }
         else {
-            *wall = 0;
+            minion->Wall = 0;
         }
     }
-    if (*wally == 0) {
+    if (minion->Wally == 0) {
         if (minion->Y >= 140) {
             minion->Y -= minion->Speed;
         }
         else {
-            *wally = 1;
+            minion->Wally = 1;
         }
     }
     else {
@@ -120,7 +120,7 @@ void GameController::Action::MinionMove(Minion^ minion,int *wall,int *wally)
             minion->Y += minion->Speed;
         }
         else {
-            *wally = 0;
+            minion->Wally = 0;
         }
     }
 

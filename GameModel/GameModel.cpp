@@ -54,6 +54,8 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Attack = attack;
 	this->AttackSpeed = attackspeed;
 	this->Speed = speed;
+	this->Wall = 0;
+	this->Wally = 0;
 }
 
 GameModel::Room::Room(int id)
