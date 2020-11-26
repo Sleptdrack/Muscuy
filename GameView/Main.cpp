@@ -9,11 +9,11 @@ using namespace GameModel;
 //using namespace GameView;
 using namespace GameController;
 using namespace sf;
-unsigned int ancho = 1280, alto = 720;
-unsigned int Width = 1000, Heigth = 600;
+unsigned int Width_W = 1280, Heigth_W = 720;
+unsigned int Width = 1000, Heigth = 550;
 //DESTINO DEL SONIDO
 
-RenderWindow window(VideoMode(ancho, alto), "Muscuy");
+RenderWindow window(VideoMode(Width_W, Heigth_W), "Muscuy");
 namespace GameView {
     class Animation
     {
@@ -297,16 +297,16 @@ int main()
     Clock time2;
     Texture T_Map;
     Sprite Map;
-    T_Map.loadFromFile("Imagenes/Mapa.png");
+    T_Map.loadFromFile("Imagenes/Mapa.jpeg");
     Map.setTexture(T_Map);
     Map.setPosition(0, 0);
     int flag = 0;
     Vector2i M;
     //texto;
     std::string health = "Health: ",expp="Exp: ",level="Level: ",fp="FuryPoint: ";
-    GameView::Word Loss("LOSSER!!!", (float)ancho / 2 - 50, (float)alto / 2);
+    GameView::Word Loss("LOSSER!!!", (float)Width_W / 2 - 50, (float)Heigth_W / 2);
     Loss.Size(40);
-    GameView::Word Btn("Restart", (float)ancho / 2 - 50, (float)alto / 2 + 50);
+    GameView::Word Btn("Restart", (float)Width_W / 2 - 50, (float)Heigth_W / 2 + 50);
     GameView::Word Live(health, 0, 0);
     GameView::Word Exp(expp, 200, 0);
     GameView::Word Level(level, 350, 0);
