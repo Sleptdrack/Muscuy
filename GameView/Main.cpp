@@ -283,7 +283,7 @@ int main()
     SoundBuffer Buffer;
     //Sonido a cargar
     Sound Sonido;
-    Buffer.loadFromFile("SoundTrack/general.wav");
+    Buffer.loadFromFile("SoundTrack/music_background.wav");
     // SE GUARDARA EL SONIDO EN EL BUFFER LISTO PARA SER USADO
     Sonido.setBuffer(Buffer);
     GameView::Item ListItem[5];
@@ -401,7 +401,7 @@ int main()
     Buffer.loadFromFile("SoundTrack/fondo.wav");
     Sonido.setBuffer(Buffer);
     Sonido.play();*/
-    
+    Sonido.play();
     while (window.isOpen())
     {
         //Sonido.play();

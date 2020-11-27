@@ -57,6 +57,7 @@ namespace GameModel {
 		property int CurrentRoom;
 		property List<Item^>^ LItem;
 		Player(int id, int health, float x, float y, double attack, double attackspeed, float speed, int exp, int level, int furypoints);
+		Player();
 		void Reset();
 	};
 	[Serializable]
