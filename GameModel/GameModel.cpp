@@ -23,6 +23,10 @@ GameModel::Player::Player(int id,int health, float x, float y, double attack, do
 	this->LItem = gcnew List<Item^>();
 }
 
+GameModel::Player::Player()
+{
+}
+
 void GameModel::Player::Reset()
 {
 	this->Health = 100;
