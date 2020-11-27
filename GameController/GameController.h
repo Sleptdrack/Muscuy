@@ -6,7 +6,7 @@
 using namespace System;
 using namespace GameModel;
 using namespace System::Collections::Generic;
-using namespace System::Data::SqlClient;
+//using namespace System::Data::SqlClient;
 unsigned int Width = 960, Heigth = 550;
 namespace GameController {
 	public ref class Action
@@ -54,9 +54,9 @@ namespace GameController {
 		static void LoadPlayer();
 		static void LoadFloor();
 		static void LoadGame(int id, Player^ player, Floor^ floor);
-		static SqlConnection^ GetConnection();
-		static void SavePlayerDB (Player^ player);
-		static Player^ LoadPlayerDB(int id);
+		//static SqlConnection^ GetConnection();
+		//static void SavePlayerDB (Player^ player);
+		//static Player^ LoadPlayerDB(int id);
 
 	};
 }
