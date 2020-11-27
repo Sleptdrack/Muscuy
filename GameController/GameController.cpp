@@ -16,25 +16,25 @@ void GameController::Action::Move(Player^ player, int dir[2])
     dir[1] = 0;
     dir[0] = 0;
     if (Keyboard::isKeyPressed(Keyboard::W)) {
-        if (player->Y > 120) {
+        if (player->Y > Border) {
             player->Y -= player->Speed;
         }
         dir[1] -= 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::S)) {
-        if (player->Y < Heigth) {
+        if (player->Y < Heigth-50) {
             player->Y += player->Speed;
         }
         dir[1] += 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::D)) {
-        if (player->X < 140 + Width) {
+        if (player->X < Border + Width-40) {
             player->X += player->Speed;
         }
         dir[0] += 1;
     }
     if (Keyboard::isKeyPressed(Keyboard::A)) {
-        if (player->X > 140) {
+        if (player->X > Border) {
             player->X -= player->Speed;
         }
         dir[0] -= 1;
@@ -92,7 +92,7 @@ void GameController::Action::Hit(sf::Sprite &chain, sf::Clock &time, int *chainT
 void GameController::Action::MinionMove(Minion^ minion)
 {
     if (minion->Wall == 0) {
-        if (minion->X >= 140) {
+        if (minion->X >= Border) {
             minion->X-=minion->Speed;
         }
         else {
@@ -100,7 +100,7 @@ void GameController::Action::MinionMove(Minion^ minion)
         }
     }
     else{
-        if (minion->X < 140+Width) {
+        if (minion->X < Border+Width-40) {
             minion->X += minion->Speed;
         }
         else {
@@ -108,7 +108,7 @@ void GameController::Action::MinionMove(Minion^ minion)
         }
     }
     if (minion->Wally == 0) {
-        if (minion->Y >= 140) {
+        if (minion->Y >= Border) {
             minion->Y -= minion->Speed;
         }
         else {
@@ -116,7 +116,7 @@ void GameController::Action::MinionMove(Minion^ minion)
         }
     }
     else {
-        if (minion->Y < Heigth) {
+        if (minion->Y < Heigth-50) {
             minion->Y += minion->Speed;
         }
         else {
@@ -198,25 +198,25 @@ void GameController::Interaction::InizialiceRoom(Room^ Room)
     Room->LTrap->Clear();
     Room->LMinion->Clear();
     for (int i = 0; i < 10; i++) {
-        Trap^ trp = gcnew Trap((float)(rand() % Width + 140), (float)((rand() % (Heigth-120))+120), 40, 20);
+        Trap^ trp = gcnew Trap((float)(rand() % Width) + 140, (float)(rand() % (Heigth-50))+Border, 40, 20);
         Room->LTrap->Add(trp);
     }
     for (int i = 0; i < 5; i++) {
-        Minion^ minion = gcnew Minion(10, (float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), 40, 20, 0, 1);
+        Minion^ minion = gcnew Minion(10, (float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, 40, 20, 0, 1);
         Room->LMinion->Add(minion);
     }
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
-            Health^ health = gcnew Health((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
+            Health^ health = gcnew Health((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
             Room->LItem->Add(health);
         }
         else if (p == 1) {
-            Velocity^ velocity = gcnew Velocity((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
+            Velocity^ velocity = gcnew Velocity((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
             Room->LItem->Add(velocity);
         }
         else if (p == 2) {
-            Attack^ attack = gcnew Attack((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
+            Attack^ attack = gcnew Attack((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
             Room->LItem->Add(attack);
         }
     }
@@ -247,7 +247,7 @@ void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int *s
 {
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
-    Door.setPosition(1100, 335);
+    Door.setPosition(Width+Border-40, 335);
     if (RoomCleared(Level->LRoom[player->CurrentRoom])) {
         if (player->CurrentRoom < 9) {
             Door.setFillColor(Color::Red);

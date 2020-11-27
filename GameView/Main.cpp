@@ -10,7 +10,7 @@ using namespace GameModel;
 using namespace GameController;
 using namespace sf;
 unsigned int Width_W = 1280, Heigth_W = 720;
-unsigned int Width = 960, Heigth = 550;
+unsigned int Width = 1100, Heigth = 650,Border;
 //DESTINO DEL SONIDO
 
 RenderWindow window(VideoMode(Width_W, Heigth_W), "Muscuy");
@@ -303,18 +303,19 @@ int main()
     W[1].setTexture(T1);
     W[2].setTexture(T2);
     W[3].setTexture(T2);
-    W[0].setScale(1.58, 1);
+    Border = (Width_W - Width) / 2;
+    W[0].setScale((float)(Border+5)/95, 1);
     W[0].setPosition(0, 0);
-    W[1].setPosition(1150, 0);
-    W[1].setScale(1.58, 1);
-    W[2].setPosition(150, 0);
-    W[2].setScale(0.78125, 1.18);
-    W[3].setPosition(150, 550);
-    W[3].setScale(0.78125, 1.8);
-    T_Map.loadFromFile("Imagenes//escenario_v2.png");
+    W[1].setPosition((float)Width+Border, 0);
+    W[1].setScale((float)(Border + 5) / 95, 1);
+    W[2].setPosition((float)Border, 0);
+    W[2].setScale((float)(Width+5)/1280, (float)(Border+5)/102);
+    W[3].setPosition((float)(Border), Heigth);
+    W[3].setScale((float)(Width + 5) / 1280, (float)(Border+5)/ 102);
+    T_Map.loadFromFile("Imagenes/Mapa.png");
     Map.setTexture(T_Map);
-    Map.setPosition(145, 115);
-    Map.setScale(1, 0.9);
+    Map.setPosition(Border, Border);
+    Map.setScale((float)Width/1007, (float)(Heigth-Border)/552);
     int flag = 0;
     Vector2i M;
     //texto;
@@ -350,7 +351,7 @@ int main()
     A4.text.setString(L"▼");
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
-    Door.setPosition(1150, 335);
+    Door.setPosition(Width+Border, 335);
     int Tutorial[8];
     for (int p = 0; p < 8; p++) {
         Tutorial[p] = 1;
@@ -395,12 +396,6 @@ int main()
     chain.setTexture(tchain);
     chain.setScale((float)0.05, (float)0.05);
     //
-    
-    /*SoundBuffer Buffer;
-    Sound Sonido;
-    Buffer.loadFromFile("SoundTrack/fondo.wav");
-    Sonido.setBuffer(Buffer);
-    Sonido.play();*/
     Sonido.play();
     while (window.isOpen())
     {
@@ -702,11 +697,11 @@ int main()
                     ListItem[u] = H;
                     ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
                 }
-                else if (floor->LRoom[0]->LItem[u]->Type == 2) {
+                else if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 2) {
                     ListItem[u] = D;
                     ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
                 }
-                else if (floor->LRoom[0]->LItem[u]->Type == 1) {
+                else if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 1) {
                     ListItem[u] = V;
                     ListItem[u].SetPosition(floor->LRoom[personaje->CurrentRoom]->LItem[u]->X, floor->LRoom[personaje->CurrentRoom]->LItem[u]->Y);
                 }

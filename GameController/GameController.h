@@ -7,7 +7,7 @@ using namespace System;
 using namespace GameModel;
 using namespace System::Collections::Generic;
 //using namespace System::Data::SqlClient;
-unsigned int Width = 960, Heigth = 550;
+unsigned int Width = 1100, Heigth = 650,Border=(1280-Width)/2;
 namespace GameController {
 	public ref class Action
 	{
