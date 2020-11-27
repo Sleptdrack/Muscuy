@@ -391,7 +391,7 @@ void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
     
 }
 
-SqlConnection^ GameController::DB::GetConnection()
+/*SqlConnection^ GameController::DB::GetConnection()
 {
 	SqlConnection^ conn = gcnew SqlConnection();
 	String^ strConn = "Server=muscuy.cjvxsxw5p3iw.us-east-1.rds.amazonaws.com;" +
@@ -436,7 +436,7 @@ Player^ GameController::DB::LoadPlayerDB(int id) {
 
 	return player;
 }
-
+*/
 
 GameController::PlayerDB::PlayerDB()
 {
