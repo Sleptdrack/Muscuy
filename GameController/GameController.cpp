@@ -331,6 +331,8 @@ void GameController::DB::SaveFloor()
 }
 void GameController::DB::SaveGame(int id,Player^ player, Floor^ floor)
 {
+    //SaveGameDB(player);
+    //al igual que el loadplayerdb se usara para cuando se requiera base de datos
     player->Id = id;
     floor->Id = id;
     if (floorDB->ListDB->Count <= id) {
@@ -374,6 +376,8 @@ void GameController::DB::LoadFloor()
 
 void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
 {
+    //player=LoadPlayerDB(id);
+    //para la utilizacion de la base de datos
     LoadFloor();
     LoadPlayer();
     for (int i = 0; i < playerDB->ListDB->Count; i++) {
