@@ -6,7 +6,7 @@
 using namespace System;
 using namespace GameModel;
 using namespace System::Collections::Generic;
-unsigned int Width = 1000, Heigth = 550;
+unsigned int Width = 960, Heigth = 550;
 namespace GameController {
 	public ref class Action
 	{

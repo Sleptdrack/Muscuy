@@ -10,7 +10,7 @@ using namespace GameModel;
 using namespace GameController;
 using namespace sf;
 unsigned int Width_W = 1280, Heigth_W = 720;
-unsigned int Width = 1000, Heigth = 550;
+unsigned int Width = 960, Heigth = 550;
 //DESTINO DEL SONIDO
 
 RenderWindow window(VideoMode(Width_W, Heigth_W), "Muscuy");
@@ -295,11 +295,26 @@ int main()
     auto tp = std::chrono::steady_clock::now();
     float dt;
     Clock time2;
-    Texture T_Map;
-    Sprite Map;
-    T_Map.loadFromFile("Imagenes/Mapa.jpeg");
+    Texture T_Map,T1,T2;
+    T1.loadFromFile("Imagenes/RM.png");
+    T2.loadFromFile("Imagenes/TM.png");
+    Sprite Map,W[4];
+    W[0].setTexture(T1);
+    W[1].setTexture(T1);
+    W[2].setTexture(T2);
+    W[3].setTexture(T2);
+    W[0].setScale(1.58, 1);
+    W[0].setPosition(0, 0);
+    W[1].setPosition(1150, 0);
+    W[1].setScale(1.58, 1);
+    W[2].setPosition(150, 0);
+    W[2].setScale(0.78125, 1.18);
+    W[3].setPosition(150, 550);
+    W[3].setScale(0.78125, 1.8);
+    T_Map.loadFromFile("Imagenes//escenario_v2.png");
     Map.setTexture(T_Map);
-    Map.setPosition(0, 0);
+    Map.setPosition(145, 115);
+    Map.setScale(1, 0.9);
     int flag = 0;
     Vector2i M;
     //texto;
@@ -335,7 +350,7 @@ int main()
     A4.text.setString(L"▼");
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
-    Door.setPosition(Width+140, Heigth / 2);
+    Door.setPosition(1150, 335);
     int Tutorial[8];
     for (int p = 0; p < 8; p++) {
         Tutorial[p] = 1;
@@ -501,6 +516,10 @@ int main()
                         Interaction::ChangeRoom(floor, personaje, &state);
                     }
                     window.clear();
+                    
+                    for (int i = 0; i < 4; i++) {
+                        window.draw(W[i]);
+                    }
                     window.draw(Map);
                     for (int o = 0; o < 10; o++) {
                         window.draw(V_trp[o]);

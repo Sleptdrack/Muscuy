@@ -198,25 +198,25 @@ void GameController::Interaction::InizialiceRoom(Room^ Room)
     Room->LTrap->Clear();
     Room->LMinion->Clear();
     for (int i = 0; i < 10; i++) {
-        Trap^ trp = gcnew Trap((float)(rand() % Width + 140), (float)(rand() % (Heigth)), 40, 20);
+        Trap^ trp = gcnew Trap((float)(rand() % Width + 140), (float)((rand() % (Heigth-120))+120), 40, 20);
         Room->LTrap->Add(trp);
     }
     for (int i = 0; i < 5; i++) {
-        Minion^ minion = gcnew Minion(10, (float)(rand() % Width + 140), (float)(rand() % (Heigth)), 40, 20, 0, 1);
+        Minion^ minion = gcnew Minion(10, (float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), 40, 20, 0, 1);
         Room->LMinion->Add(minion);
     }
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
-            Health^ health = gcnew Health((float)(rand() % Width + 140), (float)(rand() % (Heigth)), p);
+            Health^ health = gcnew Health((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
             Room->LItem->Add(health);
         }
         else if (p == 1) {
-            Velocity^ velocity = gcnew Velocity((float)(rand() % Width + 140), (float)(rand() % (Heigth)), p);
+            Velocity^ velocity = gcnew Velocity((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
             Room->LItem->Add(velocity);
         }
         else if (p == 2) {
-            Attack^ attack = gcnew Attack((float)(rand() % Width + 140), (float)(rand() % (Heigth)), p);
+            Attack^ attack = gcnew Attack((float)(rand() % Width + 140), (float)((rand() % (Heigth - 120)) + 120), p);
             Room->LItem->Add(attack);
         }
     }
@@ -247,7 +247,7 @@ void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int *s
 {
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
-    Door.setPosition(Width + 140, Heigth / 2);
+    Door.setPosition(1100, 335);
     if (RoomCleared(Level->LRoom[player->CurrentRoom])) {
         if (player->CurrentRoom < 9) {
             Door.setFillColor(Color::Red);
