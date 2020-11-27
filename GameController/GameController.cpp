@@ -387,6 +387,53 @@ void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
     
 }
 
+SqlConnection^ GameController::DB::GetConnection()
+{
+	SqlConnection^ conn = gcnew SqlConnection();
+	String^ strConn = "Server=muscuy.cjvxsxw5p3iw.us-east-1.rds.amazonaws.com;" +
+		"Database=muscuy;User ID=admin;Password=lpooadmin";
+	conn->ConnectionString = strConn;
+	conn->Open();
+	return conn;
+}
+
+void GameController::DB::SavePlayerDB(Player^ player)
+{
+	SqlConnection^ conn = GetConnection();
+	SqlCommand^ comm = gcnew SqlCommand();
+	comm->Connection = conn;
+	comm->CommandText = "Update Player set id ='"+player ->Id+"',health= '"+player ->Health+"',x='"+player ->X+"',y='"+player ->Y+"',attack='"+player ->Attack+"',attackspeed='"+player ->AttackSpeed+"',speed='"+player ->Speed+"',expe='"+player ->Exp+"',llevel='"+player ->Level+"',furypoints='"+player ->Furypoints+"',currentroom='"+player ->CurrentRoom+"'");
+	comm->ExecuteNonQuery();
+}
+
+Player^ GameController::DB::LoadPlayerDB(int id) {
+	Player^ player = nullptr;
+	SqlConnection^ conn = GetConnection();
+	SqlCommand^ comm = gcnew SqlCommand();
+	comm->Connection = conn;
+	comm->CommandText = "SELECT * FROM Player WHERE id='" + id + "'";
+
+	SqlDataReader^ dr = comm->ExecuteReader();
+
+	if (dr->Read()) {
+		player = gcnew Player();
+		player ->Id = (int)dr["id"];
+		player ->Health = (int) (dr["health"]);		
+		player ->X = safe_cast<float>(dr["x"]);
+		player ->Y = safe_cast<float>(dr["y"]);
+		player ->Attack = safe_cast<double>(dr["attack"]);
+		player ->AttackSpeed = safe_cast<double>(dr["attackspeed"]);
+		player ->Speed = safe_cast<float>(dr["speed"]);		
+		player ->Exp = (int)(dr["expe"]);
+		player ->Level = (int)(dr["llevel"]);
+		player ->Furypoints = (int)(dr["furypoints"]);
+		player ->CurrentRoom = (int)(dr["currentroom"]);
+	}
+
+	return player;
+}
+
+
 GameController::PlayerDB::PlayerDB()
 {
 }
