@@ -53,5 +53,9 @@ namespace GameController {
 		static void LoadPlayer();
 		static void LoadFloor();
 		static void LoadGame(int id, Player^ player, Floor^ floor);
+		static SqlConnection^ GetConnection();
+		static void SavePlayerDB (Player^ player);
+		static Player^ LoadPlayerDB(int id);
+
 	};
 }
