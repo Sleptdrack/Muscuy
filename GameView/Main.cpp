@@ -357,7 +357,7 @@ int main()
         Tutorial[p] = 1;
     }
     //
-    int wall[10],wally[10],pared=0,pared1=0;
+    int pared=0,pared1=0,amount=5;
     int minion_dead[10];
     int m_hit[10];
     Sprite V_minion[10];
@@ -374,14 +374,6 @@ int main()
     Texture_trp.loadFromFile("Imagenes/spike.png");
     //Actualizacion de variables y visualizacion de trampas
     //
-    for (int u = 0; u < 10; u++) {
-        V_trp[u].setTexture(Texture_trp);
-        V_trp[u].setScale((float)0.1, (float)0.072);
-    }
-    for (int u = 0; u < 5; u++) {
-        V_minion[u].setTexture(T_minion);
-        V_minion[u].setScale(0.5, 0.5);
-    }
     //
     Boss^ boss = gcnew Boss(100, 200, 200, 100, 0, 1);
     Floor^ floor = gcnew Floor(boss);
@@ -477,7 +469,7 @@ int main()
                     Interaction::UseItem(personaje);
                     //Colision con trampas:
                     Action::LevelUp(personaje);
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < amount; i++) {
                         Action::MinionMove(floor->LRoom[personaje->CurrentRoom]->LMinion[i]);
                         V_minion[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[i]->X, floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Y);
                         if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
@@ -525,7 +517,7 @@ int main()
                             ListItem[i].Draw(window);
                         }
                     }
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < amount; i++) {
                         if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
                             window.draw(V_minion[i]);
                         }
@@ -679,13 +671,22 @@ int main()
             window.display();
         }
         else if (state == 5) {
+            if (personaje->CurrentRoom < 3) {
+                amount = 5;
+            }
+            else if (personaje->CurrentRoom <= 5) {
+                amount = 7;
+            }
+            else if (personaje->CurrentRoom < 9) {
+                amount = 10;
+            }
             for (int u = 0; u < 10; u++) {
                 hit[u] = 0;
                 V_trp[u].setTexture(Texture_trp);
                 V_trp[u].setScale((float)0.1, (float)0.072);
                 V_trp[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LTrap[u]->X, floor->LRoom[personaje->CurrentRoom]->LTrap[u]->Y);
             }
-            for (int u = 0; u < 5; u++) {
+            for (int u = 0; u < amount; u++) {
                 minion_dead[u] = 0;
                 m_hit[u] = 0;
                 V_minion[u].setTexture(T_minion);

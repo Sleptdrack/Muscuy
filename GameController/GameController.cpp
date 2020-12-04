@@ -192,31 +192,44 @@ int GameController::Action::CompleteTutorial(int t[8])
     return 1;
 }
 
-void GameController::Interaction::InizialiceRoom(Room^ Room)
+void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
 {
+    int speed, amount;
     Room->LItem->Clear();
     Room->LTrap->Clear();
     Room->LMinion->Clear();
+    if (Number < 3) {
+        speed = 1;
+        amount = 5;
+    }
+    else if (Number <= 5) {
+        amount = 7;
+        speed = 1;
+    }
+    else if (Number < 9) {
+        amount = 10;
+        speed = 2;
+    }
     for (int i = 0; i < 10; i++) {
-        Trap^ trp = gcnew Trap((float)(rand() % Width) + 140, (float)(rand() % (Heigth-50))+Border, 40, 20);
+        Trap^ trp = gcnew Trap((float)Border+ rand()%Width, (float)Border+ rand() % (Heigth-(Border+50), 40, 20);
         Room->LTrap->Add(trp);
     }
-    for (int i = 0; i < 5; i++) {
-        Minion^ minion = gcnew Minion(10, (float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, 40, 20, 0, 1);
+    for (int i = 0; i < amount; i++) {
+        Minion^ minion = gcnew Minion(10, (float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), 40, 20, 0, speed);
         Room->LMinion->Add(minion);
     }
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
-            Health^ health = gcnew Health((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
+            Health^ health = gcnew Health((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
             Room->LItem->Add(health);
         }
         else if (p == 1) {
-            Velocity^ velocity = gcnew Velocity((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
+            Velocity^ velocity = gcnew Velocity((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
             Room->LItem->Add(velocity);
         }
         else if (p == 2) {
-            Attack^ attack = gcnew Attack((float)(rand() % Width) + 140, (float)(rand() % (Heigth - 50)) + Border, p);
+            Attack^ attack = gcnew Attack((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
             Room->LItem->Add(attack);
         }
     }
@@ -238,7 +251,7 @@ void GameController::Interaction::InizialiceFloor(Floor^ Level)
     Level->LRoom->Clear();
     for (int i = 0; i < 9; i++) {
         Room^ room = gcnew Room(i);
-        GameController::Interaction::InizialiceRoom(room);
+        GameController::Interaction::InizialiceRoom(room,i);
         Level->LRoom->Add(room);
     }
 }

@@ -21,7 +21,7 @@ namespace GameController {
 	};
 	public ref class Interaction {
 	public:
-		static void InizialiceRoom(Room^ Room);
+		static void InizialiceRoom(Room^ Room, int Number);
 		static int RoomCleared(Room^ room);
 		static void InizialiceFloor(Floor^ Level);
 		static void ChangeRoom(Floor^ Level,Player^ player,int *state);
