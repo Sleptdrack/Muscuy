@@ -53,10 +53,9 @@ namespace GameModel {
 		property float Speed;
 		property int Exp;
 		property int Level;
-		property int Furypoints;
 		property int CurrentRoom;
 		property List<Item^>^ LItem;
-		Player(int id, int health, float x, float y, double attack, double attackspeed, float speed, int exp, int level, int furypoints);
+		Player(int id, int health, float x, float y, double attack, double attackspeed, float speed, int exp, int level);
 		Player();
 		void Reset();
 	};
@@ -79,9 +78,10 @@ namespace GameModel {
 		property double Attack;
 		property double AttackSpeed;
 		property int Speed;
+		property int Type;
 		property int Wall;
 		property int Wally;
-		Minion(int health, float x, float y,float size,int attack, double attackspeed, int speed);
+		Minion(int health, float x, float y,float size,int attack, double attackspeed, int type);
 	};
 	[Serializable]
 	public ref class Room {

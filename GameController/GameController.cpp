@@ -2,6 +2,7 @@
 #include "GameController.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <math.h>
 
 using namespace GameModel;
 using namespace sf;
@@ -91,38 +92,68 @@ void GameController::Action::Hit(sf::Sprite &chain, sf::Clock &time, int *chainT
 }
 void GameController::Action::MinionMove(Minion^ minion)
 {
-    if (minion->Wall == 0) {
-        if (minion->X >= Border) {
-            minion->X-=minion->Speed;
+    if (minion->Type == 0) {
+        if (minion->Wall == 0) {
+            if (minion->X >= Border) {
+                minion->X -= minion->Speed;
+            }
+            else {
+                minion->Wall = 1;
+            }
         }
         else {
-            minion->Wall = 1;
+            if (minion->X < Border + Width - 40) {
+                minion->X += minion->Speed;
+            }
+            else {
+                minion->Wall = 0;
+            }
         }
-    }
-    else{
-        if (minion->X < Border+Width-40) {
-            minion->X += minion->Speed;
+        if (minion->Wally == 0) {
+            if (minion->Y >= Border) {
+                    minion->Y -= minion->Speed;
+
+            }
+            else {
+                minion->Wally = 1;
+            }
         }
         else {
-            minion->Wall = 0;
+            if (minion->Y < Heigth - 50) {
+                    minion->Y += minion->Speed;
+            }
+            else {
+                minion->Wally = 0;
+            }
         }
     }
-    if (minion->Wally == 0) {
-        if (minion->Y >= Border) {
-            minion->Y -= minion->Speed;
-        }
-        else {
-            minion->Wally = 1;
-        }
-    }
-    else {
-        if (minion->Y < Heigth-50) {
-            minion->Y += minion->Speed;
+    else if (minion->Type == 1) {
+        minion->Y -= 1.5 * sin((minion->Wally) * 3.1416 / 180);
+        if (minion->Wally <= 360) {
+            minion->Wally += 1;
         }
         else {
             minion->Wally = 0;
         }
+        if (minion->Wall == 0) {
+            if (minion->X >= Border) {
+                minion->X -= minion->Speed;
+            }
+            else {
+                minion->Wall = 1;
+            }
+        }
+        else {
+            if (minion->X < Border + Width - 40) {
+                minion->X += minion->Speed;
+            }
+            else {
+                minion->Wall = 0;
+            }
+        }
     }
+        
+    
 
 }
 void GameController::Action::LevelUp(Player^ player)
@@ -133,7 +164,6 @@ void GameController::Action::LevelUp(Player^ player)
         player->Exp = 0;
     }
 }
-
 void GameController::Action::PickUP(Player^ player, Room^ room)
 {
     for (int i = 0; i < room->LItem->Count; i++) {
@@ -157,7 +187,6 @@ void GameController::Action::PickUP(Player^ player, Room^ room)
         }
     }
 }
-
 int GameController::Action::CompleteTutorial(int t[8])
 {
     if (Keyboard::isKeyPressed(Keyboard::W)) {
@@ -194,42 +223,48 @@ int GameController::Action::CompleteTutorial(int t[8])
 
 void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
 {
-    int speed, amount;
+    int type, amount,desfase;
     Room->LItem->Clear();
     Room->LTrap->Clear();
     Room->LMinion->Clear();
     if (Number < 3) {
-        speed = 1;
+        type = 0;
         amount = 5;
     }
     else if (Number <= 5) {
         amount = 7;
-        speed = 1;
+        type =1 ;
     }
     else if (Number < 9) {
         amount = 10;
-        speed = 2;
+        type = rand() % 2;
+    }
+    if (type == 1) {
+        desfase = 86;
+    }
+    else {
+        desfase = 0;
     }
     for (int i = 0; i < 10; i++) {
-        Trap^ trp = gcnew Trap((float)Border+ rand()%Width, (float)Border+ rand() % (Heigth-(Border+50), 40, 20);
+        Trap^ trp = gcnew Trap((float)Border+ rand()%Width, (float)Border+rand() % (Heigth-(Border+50)), 40, 20);
         Room->LTrap->Add(trp);
     }
     for (int i = 0; i < amount; i++) {
-        Minion^ minion = gcnew Minion(10, (float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), 40, 20, 0, speed);
+        Minion^ minion = gcnew Minion(100, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, type);
         Room->LMinion->Add(minion);
     }
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
-            Health^ health = gcnew Health((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
+            Health^ health = gcnew Health((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50)), p);
             Room->LItem->Add(health);
         }
         else if (p == 1) {
-            Velocity^ velocity = gcnew Velocity((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
+            Velocity^ velocity = gcnew Velocity((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50)), p);
             Room->LItem->Add(velocity);
         }
         else if (p == 2) {
-            Attack^ attack = gcnew Attack((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50), p);
+            Attack^ attack = gcnew Attack((float)Border + rand() % Width, (float)Border + rand() % (Heigth - (Border + 50)), p);
             Room->LItem->Add(attack);
         }
     }
@@ -255,7 +290,6 @@ void GameController::Interaction::InizialiceFloor(Floor^ Level)
         Level->LRoom->Add(room);
     }
 }
-
 void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int *state)
 {
     RectangleShape Door(Vector2f(20, 100));
@@ -274,7 +308,6 @@ void GameController::Interaction::ChangeRoom(Floor^ Level, Player^ player,int *s
         }
     }
 }
-
 void GameController::Interaction::UseItem(Player^ player)
 {
     for (int i = 0; i < player->LItem->Count; i++) {
@@ -284,7 +317,7 @@ void GameController::Interaction::UseItem(Player^ player)
                 player->LItem[i]->Used = 1;
             }
             else if (player->LItem[i]->Type == 1) {
-                player->Speed += 1;
+                player->Speed += 0.5;
                 player->LItem[i]->Used = 1;
             }
             else if (player->LItem[i]->Type == 2) {
@@ -309,18 +342,19 @@ void GameController::Interaction::GetHit(Player^ player, Trap^ trp,int *hit)
         }
     }
 }
-void GameController::Interaction::FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion,int *hit)
+void GameController::Interaction::FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion,int *Hit)
 {
     if ((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size))) {
-        if (*hit == 0) {
+        if (*Hit == 0) {
+            *Hit = 1;
             player->Health -= minion->Attack;
-            *hit = 1;
+            *Hit = 1;
         }
 
     }
-    if (*hit == 1) {
+    if (*Hit == 1) {
         if (!((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size)))) {
-            *hit = 0;
+            *Hit = 0;
         }
     }
     if (chain.getGlobalBounds().contains(minion->X, minion->Y)) {
@@ -386,7 +420,6 @@ void GameController::DB::LoadFloor()
         stream->Close();
     }
 }
-
 void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
 {
     //player=LoadPlayerDB(id);

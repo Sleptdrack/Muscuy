@@ -6,7 +6,7 @@
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace sf;
-GameModel::Player::Player(int id,int health, float x, float y, double attack, double attackSpeed, float speed, int exp, int level, int furypoints)
+GameModel::Player::Player(int id,int health, float x, float y, double attack, double attackSpeed, float speed, int exp, int level)
 {
 
 	this->Id = id;
@@ -19,7 +19,6 @@ GameModel::Player::Player(int id,int health, float x, float y, double attack, do
 	this->Speed = speed;
 	this->Exp = exp;
 	this->Level = level;
-	this->Furypoints = furypoints;
 	this->LItem = gcnew List<Item^>();
 }
 
@@ -37,7 +36,6 @@ void GameModel::Player::Reset()
 	this->Speed = 1;
 	this->Exp = 0;
 	this->Level = 1;
-	this->Furypoints = 0;
 	this->CurrentRoom = 0;
 }
 
@@ -49,7 +47,7 @@ GameModel::Trap::Trap(float x, float y,float size,int damage)
 	this->Damage = damage;
 }
 
-GameModel::Minion::Minion(int health, float x, float y,float size,int attack, double attackspeed, int speed)
+GameModel::Minion::Minion(int health, float x, float y,float size,int attack, double attackspeed, int type)
 {
 	this->Health = health;
 	this->X = x;
@@ -57,9 +55,10 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Size = size;
 	this->Attack = attack;
 	this->AttackSpeed = attackspeed;
-	this->Speed = speed;
-	this->Wall = 0;
-	this->Wally = 0;
+	this->Speed = 1+(rand() % 10)/10;
+	this->Type = type;
+	this->Wall = rand()%2;
+	this->Wally = rand() % 2;
 }
 
 GameModel::Room::Room(int id)

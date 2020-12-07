@@ -319,7 +319,7 @@ int main()
     int flag = 0;
     Vector2i M;
     //texto;
-    std::string health = "Health: ",expp="Exp: ",level="Level: ",fp="FuryPoint: ";
+    std::string health = "Health: ",expp="Exp: ",level="Level: ",fp="Room Number: ";
     GameView::Word Loss("LOSSER!!!", (float)Width_W / 2 - 50, (float)Heigth_W / 2);
     Loss.Size(40);
     GameView::Word Btn("Restart", (float)Width_W / 2 - 50, (float)Heigth_W / 2 + 50);
@@ -352,7 +352,7 @@ int main()
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
     Door.setPosition(Width+Border, 335);
-    int Tutorial[8];
+    int Tutorial[8],ver=0,base=1000;
     for (int p = 0; p < 8; p++) {
         Tutorial[p] = 1;
     }
@@ -379,7 +379,7 @@ int main()
     Floor^ floor = gcnew Floor(boss);
     //
     int Done = 0;
-    Player^ personaje= gcnew Player(0,100, 140, 140, 20, 1, 1, 0, 1, 1);
+    Player^ personaje= gcnew Player(0,100, 140, 140, 20, 1, 1, 0, 1);
     GameView::Character VP({ 140.f,140.f });
     Sprite chain;
     Texture tchain;
@@ -463,7 +463,13 @@ int main()
                     Live.UpdateString(health.replace(8, 3, (std::to_string(personaje->Health))));
                     Exp.UpdateString(expp.replace(5, 3, std::to_string(personaje->Exp)));
                     Level.UpdateString(level.replace(7, 3, std::to_string(personaje->Level)));
-                    FP.UpdateString(fp.replace(11, 3, std::to_string(floor->LRoom[2]->LMinion[3]->Health)));
+                    FP.UpdateString(fp.replace(13, 3, std::to_string(personaje->CurrentRoom+1)));
+                    if (floor->LRoom[0]->LMinion[0]->Y>= ver) {
+                        ver = floor->LRoom[0]->LMinion[0]->Y;
+                    }
+                    if (floor->LRoom[0]->LMinion[0]->Y <= base) {
+                        base = floor->LRoom[0]->LMinion[0]->Y;
+                    }
                     //Coleccion de Objetos
                     Action::PickUP(personaje, floor->LRoom[personaje->CurrentRoom]);
                     Interaction::UseItem(personaje);
@@ -473,7 +479,7 @@ int main()
                         Action::MinionMove(floor->LRoom[personaje->CurrentRoom]->LMinion[i]);
                         V_minion[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[i]->X, floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Y);
                         if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
-                            Interaction::FightMinion(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LMinion[i], &m_hit[i]);
+                            Interaction::FightMinion(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LMinion[i],&m_hit[i]);
                         }
                         else if (minion_dead[i] == 0) {
                             minion_dead[i] = 1;

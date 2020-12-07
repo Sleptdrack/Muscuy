@@ -27,7 +27,7 @@ namespace GameController {
 		static void ChangeRoom(Floor^ Level,Player^ player,int *state);
 		static void UseItem(Player^ player);
 		static void GetHit(Player^ player, Trap^ trp,int *hit);
-		static void FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion,int *hit);
+		static void FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion, int* Hit);
 	};
 	[Serializable]
 	public ref class PlayerDB {
