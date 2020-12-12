@@ -1,4 +1,3 @@
-﻿
 #include <SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>
 #include <cstdlib>
@@ -292,6 +291,7 @@ int main()
     GameView::ItemHealth H;
     GameView::ItemVelocity V;
     int state = 0,InPause=0,id=0;
+    int prob = 0;
     auto tp = std::chrono::steady_clock::now();
     float dt;
     Clock time2;
@@ -356,10 +356,22 @@ int main()
     for (int p = 0; p < 8; p++) {
         Tutorial[p] = 1;
     }
+    //NUEVO
+    Sprite V_boss[10];
+    Texture T_boss;
+    T_boss.loadFromFile("Imagenes/gus.png");
+
+    int boss_dead[10];
+
+    Texture T_boss2;
+    T_boss2.loadFromFile("Imagenes/boss_100.png");
+    int boss_dead2[10];
     //
     int pared=0,pared1=0,amount=5;
     int minion_dead[10];
     int m_hit[10];
+    int m_hit2[10];
+    int m_hit3[10];
     Sprite V_minion[10];
     Texture T_minion;
     T_minion.loadFromFile("Imagenes/Personaje2.png");
@@ -375,7 +387,17 @@ int main()
     //Actualizacion de variables y visualizacion de trampas
     //
     //
-    Boss^ boss = gcnew Boss(100, 200, 200, 100, 0, 1);
+     //
+    for (int u = 0; u < 3; u++) {
+        V_boss[u].setTexture(T_boss);
+        V_boss[u].setScale(1.5, 1.5);
+    }
+
+    V_boss[3].setTexture(T_boss2);
+    V_boss[3].setScale(0.5, 0.5);
+    //
+
+    Boss^ boss = gcnew Boss(100, 100, 140, 100, 0, 0, 1);
     Floor^ floor = gcnew Floor(boss);
     //
     int Done = 0;
@@ -431,11 +453,30 @@ int main()
                 for (int i = 0; i < 5; i++) {
                     ListItem[i].Draw(window);
                 }
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 8; i++) {
                     if (floor->LRoom[personaje->CurrentRoom]->LMinion[i]->Health > 0) {
                         window.draw(V_minion[i]);
                     }
                 }
+
+                //NUEVO
+                if (personaje->CurrentRoom == 3) {
+                    for (int i = 0; i < 3; i++) {
+                        if (floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Health > 0) {
+                            window.draw(V_boss[i]);
+                        }
+                    }
+                }
+
+                if (personaje->CurrentRoom == 7) {
+                    if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 0) {
+                        window.draw(V_boss[3]);
+                    }
+                }
+                //
+
+
+
                 window.draw(Exp.text);
                 window.draw(Live.text);
                 window.draw(Level.text);
@@ -486,6 +527,42 @@ int main()
                             personaje->Exp += 20;
                         }
                     }
+
+                    //NUEVO
+                    if (personaje->CurrentRoom == 3) {
+
+                        for (int i = 0; i < 3; i++) {
+                            Action::BossMove1(floor->LRoom[personaje->CurrentRoom]->LBoss[i], &prob);
+                            V_boss[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[i]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Y);
+                            if (floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Health > 0) {
+                                Interaction::FightBoss(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LBoss[i], &m_hit2[i]);
+                            }
+                            else if (boss_dead[i] == 0) {
+                                boss_dead[i] = 1;
+                                personaje->Exp += 40;
+                            }
+                        }
+                    }
+                    //
+
+                    //NUEVO2
+                    if (personaje->CurrentRoom == 8) {
+
+                        Action::BossMove2(floor->LRoom[personaje->CurrentRoom]->LBoss[3],&prob);
+                        V_boss[3].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[3]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Y);
+                        if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 0) {
+                            Interaction::FightBoss(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LBoss[3], &m_hit3[3]);
+                        }
+                        else if (boss_dead[3] == 0) {
+                            boss_dead[3] = 1;
+                            personaje->Exp += 40;
+                        }
+                    }
+
+                    //
+
+
+
                     for (int i = 0; i < 10; i++) {
                         Interaction::GetHit(personaje, floor->LRoom[personaje->CurrentRoom]->LTrap[i], &hit[i]);
                     }
@@ -505,9 +582,32 @@ int main()
                     Action::Hit(chain, time, &chainT);
                     //
                     //Cambiar Cuarto
-                    if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
-                        Interaction::ChangeRoom(floor, personaje, &state);
+                   // if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
+                    //    Interaction::ChangeRoom(floor, personaje, &state);
+                    //}
+
+                    //NUEVO
+                    if (personaje->CurrentRoom != 3 && personaje->CurrentRoom != 8) {
+                        if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
+                            Interaction::ChangeRoom(floor, personaje, &state);
+                        }
                     }
+                    else {
+                        if (personaje->CurrentRoom == 3) {
+                            if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom]) && floor->LRoom[personaje->CurrentRoom]->LBoss[0]->Health < 1 && floor->LRoom[personaje->CurrentRoom]->LBoss[1]->Health < 1 && floor->LRoom[personaje->CurrentRoom]->LBoss[2]->Health < 1) {
+                                Interaction::ChangeRoom(floor, personaje, &state);
+                            }
+                        }
+                        else {
+                            if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom]) && floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health < 1) {
+                                Interaction::ChangeRoom(floor, personaje, &state);
+                            }
+                        }
+                    }
+
+
+                    //
+
                     window.clear();
                     
                     for (int i = 0; i < 4; i++) {
@@ -528,9 +628,45 @@ int main()
                             window.draw(V_minion[i]);
                         }
                     }
-                    if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
-                        window.draw(Door);
+                    //NUEVO
+                    if (personaje->CurrentRoom == 3) {
+                        for (int i = 0; i < 3; i++) {
+                            if (floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Health > 0) {
+                                window.draw(V_boss[i]);
+                            }
+                        }
                     }
+
+
+                    if (personaje->CurrentRoom == 8) {
+                        if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 0) {
+                            window.draw(V_boss[3]);
+                        }
+                    }
+
+                    //
+
+                    //NUEVO
+
+                    if (personaje->CurrentRoom != 3 && personaje->CurrentRoom != 8) {
+                        if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom])) {
+                            window.draw(Door);
+                        }
+                    }
+                    else {
+                        if (personaje->CurrentRoom == 3) {
+                            if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom]) && floor->LRoom[personaje->CurrentRoom]->LBoss[0]->Health < 1 && floor->LRoom[personaje->CurrentRoom]->LBoss[1]->Health < 1 && floor->LRoom[personaje->CurrentRoom]->LBoss[2]->Health < 1) {
+                                window.draw(Door);
+                            }
+                        }
+                        else {
+                            if (Interaction::RoomCleared(floor->LRoom[personaje->CurrentRoom]) && floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health < 1) {
+                                window.draw(Door);
+                            }
+                        }
+                    }
+
+                    //
                     window.draw(Exp.text);
                     window.draw(Live.text);
                     window.draw(Level.text);
@@ -699,6 +835,29 @@ int main()
                 V_minion[u].setScale(0.5, 0.5);
                 V_minion[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LMinion[u]->X, floor->LRoom[personaje->CurrentRoom]->LMinion[u]->Y);
             }
+
+            //NUEVO
+
+            if (personaje->CurrentRoom == 3) {
+                for (int u = 0; u < 3; u++) {
+                    boss_dead[u] = 0;
+                    m_hit2[u] = 0;
+                    V_boss[u].setTexture(T_boss);
+                    V_boss[u].setScale(1.5, 1.5);
+                    V_boss[u].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[u]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[u]->Y);
+                }
+            }
+
+            if (personaje->CurrentRoom == 8) {
+                boss_dead[3] = 0;
+                m_hit3[3] = 0;
+                V_boss[3].setTexture(T_boss2);
+                V_boss[3].setScale(0.5, 0.5);
+                V_boss[3].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[3]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Y);
+            }
+
+            //
+
             for (int u = 0; u < 5; u++) {
                 if (floor->LRoom[personaje->CurrentRoom]->LItem[u]->Type == 0) {
                     ListItem[u] = H;
