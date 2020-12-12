@@ -221,12 +221,175 @@ int GameController::Action::CompleteTutorial(int t[8])
     return 1;
 }
 
+void GameController::Action::BossMove(Boss^ boss)
+{
+    if (boss->Wall == 0) {
+        if (boss->X >= Border) {
+            boss->X = boss->X - boss->Speed * 2;
+        }
+        else {
+            boss->Wall = 1;
+        }
+    }
+    else {
+        if (boss->X < Border + Width - 40) {
+            boss->X = boss->X + boss->Speed * 2;
+        }
+        else {
+            boss->Wall = 0;
+        }
+    }
+    if (boss->Wally == 0) {
+        if (boss->Y >= Border) {
+            boss->Y = boss->Y - boss->Speed * 2;
+        }
+        else {
+            boss->Wally = 1;
+        }
+    }
+    else {
+        if (boss->Y < Heigth - 50) {
+            boss->Y = boss->Y + boss->Speed * 2;
+        }
+        else {
+            boss->Wally = 0;
+        }
+    }
+}
+
+void GameController::Action::BossMove1(Boss^ boss, int* prob)
+{
+
+
+    if (*prob == 0 || *prob == 1) {
+        if (boss->Wall == 0) {
+            if (boss->X >= Border) {
+                boss->X = boss->X - boss->Speed * 2;
+            }
+            else {
+                boss->Wall = 1;
+            }
+        }
+        else {
+            if (boss->X < Border + Width - 40) {
+                boss->X = boss->X + boss->Speed * 2;
+            }
+            else {
+                boss->Wall = 0;
+            }
+            int prob2 = rand() % 40;
+            if (prob2 == 35) {
+                *prob = 45;
+            }
+        }
+        
+
+    }
+
+    if (*prob == 45) {
+        if (boss->Wally == 0) {
+            if (boss->Y >= Border) {
+                boss->Y = boss->Y - boss->Speed * 2;
+            }
+            else {
+                boss->Wally = 1;
+            }
+        }
+        else {
+            if (boss->Y < Heigth - 50) {
+                boss->Y = boss->Y + boss->Speed * 2;
+            }
+            else {
+                boss->Wally = 0;
+            }
+        }
+        int prob2 = rand() % 40;
+        if (prob2 == 35) {
+            *prob = 0;
+        }
+        
+
+    }
+}
+
+void GameController::Action::BossMove2(Boss^ boss, int* prob)
+{
+
+
+    if (*prob == 0 || *prob == 1) {
+        if (boss->Wall == 0) {
+            if (boss->X >= Border) {
+                boss->X = boss->X - boss->Speed * 2;
+            }
+            else {
+                boss->Wall = 1;
+            }
+        }
+        else {
+            if (boss->X < Border + Width - 40) {
+                boss->X = boss->X + boss->Speed * 2;
+            }
+            else {
+                boss->Wall = 0;
+            }
+            int prob2 = rand() % 40;
+            if (prob2 == 35) {
+                *prob = 45;
+            }
+        }
+        int prob3 = rand() % 400;
+        if (prob3 == 50) {
+            if (boss->Wall == 1) {
+                boss->Wall = 0;
+            }
+            else {
+                boss->Wall = 1;
+            }
+        }
+
+    }
+
+    if (*prob == 45) {
+        if (boss->Wally == 0) {
+            if (boss->Y >= Border) {
+                boss->Y = boss->Y - boss->Speed * 2;
+            }
+            else {
+                boss->Wally = 1;
+            }
+        }
+        else {
+            if (boss->Y < Heigth - 50) {
+                boss->Y = boss->Y + boss->Speed * 2;
+            }
+            else {
+                boss->Wally = 0;
+            }
+        }
+        int prob2 = rand() % 40;
+        if (prob2 == 35) {
+            *prob = 0;
+        }
+        int prob4 = rand() % 180;
+        if (prob4 == 50) {
+            if (boss->Wally == 1) {
+                boss->Wally = 0;
+            }
+            else {
+                boss->Wally = 1;
+            }
+        }
+
+    }
+}
+
 void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
 {
     int type, amount,desfase;
     Room->LItem->Clear();
     Room->LTrap->Clear();
     Room->LMinion->Clear();
+    Room->LBoss->Clear();
     if (Number < 3) {
         type = 0;
         amount = 5;
@@ -253,6 +416,15 @@ void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
         Minion^ minion = gcnew Minion(100, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, type);
         Room->LMinion->Add(minion);
     }
+
+    //NUEVOO
+    for (int i = 0; i < 4; i++) {
+        Boss^ boss = gcnew Boss(500, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 1);
+        Room->LBoss->Add(boss);
+    }
+    //
+
+
     for (int i = 0; i < 5; i++) {
         int p = rand() % 3;
         if (p == 0) {
@@ -268,6 +440,9 @@ void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
             Room->LItem->Add(attack);
         }
     }
+
+
+
 }
 int GameController::Interaction::RoomCleared(Room^ room)
 {
@@ -357,10 +532,31 @@ void GameController::Interaction::FightMinion(Player^ player, sf::Sprite& chain,
             *Hit = 0;
         }
     }
-    if (chain.getGlobalBounds().contains(minion->X, minion->Y)) {
+    if (chain.getGlobalBounds().contains(minion->X, minion->Y) && !((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size)))) {
         minion->Health -= player->Attack;
     }
 }
+
+void GameController::Interaction::FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit)
+{
+    if ((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size))) {
+        if (*hit == 0) {
+            player->Health -= boss->Attack;
+            *hit = 1;
+        }
+
+    }
+    if (*hit == 1) {
+        if (!((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size)))) {
+            *hit = 0;
+        }
+    }
+    if (chain.getGlobalBounds().contains(boss->X, boss->Y) && !((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size)))) {
+        boss->Health -= player->Attack;
+    }
+}
+
+
 
 void GameController::DB::SavePlayer()
 {
