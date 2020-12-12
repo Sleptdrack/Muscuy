@@ -61,24 +61,31 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Wally = rand() % 2;
 }
 
+GameModel::Boss::Boss(int health, float x, float y, float size, int attack, double attackspeed, int speed)
+{
+
+	this->Health = health;
+	this->X = x;
+	this->Y = y;
+	this->Size = size;
+	this->Attack = attack;
+	this->AttackSpeed = attackspeed;
+	this->Speed = speed;
+	this->Wall = 0;
+	this->Wally = 0;
+}
+
+
 GameModel::Room::Room(int id)
 {
 	this->Id = id;
 	this->LTrap = gcnew List<Trap^>();
 	this->LMinion = gcnew List<Minion^>();
 	this->LItem = gcnew List<Item^>();
+	this->LBoss = gcnew List<Boss^>();
 }
 
-GameModel::Boss::Boss(int health, float x, float y, double attack, double attackspeed, float speed)
-{
 
-	this->Health = health;
-	this->X = x;
-	this->Y = y;
-	this->Attack = attack;
-	this->AttackSpeed = attackspeed;
-	this->Speed = speed;
-}
 
 GameModel::Floor::Floor(Boss^lboss)
 {
