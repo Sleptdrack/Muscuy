@@ -83,6 +83,22 @@ namespace GameModel {
 		property int Wally;
 		Minion(int health, float x, float y,float size,int attack, double attackspeed, int type);
 	};
+
+	[Serializable]
+	public ref class Boss {
+	public:
+		property int Health;
+		property float X;
+		property float Y;
+		property float Size;
+		property double Attack;
+		property double AttackSpeed;
+		property int Speed;
+		property int Wall;
+		property int Wally;
+		Boss(int health, float x, float y, float size, int attack, double attackspeed, int speed);
+	};
+	
 	[Serializable]
 	public ref class Room {
 	public:
@@ -90,19 +106,12 @@ namespace GameModel {
 		property List<Trap^>^ LTrap;
 		property List<Minion^>^ LMinion;
 		property List<Item^>^ LItem;
+		property List<Boss^>^ LBoss;
 		Room(int id);
 	};
-	[Serializable]
-	public ref class Boss {
-	public:
-		property int Health;
-		property float X;
-		property float Y;
-		property double Attack;
-		property double AttackSpeed;
-		property float Speed;
-		Boss(int health, float x, float y, double attack, double attackspeed, float speed);
-	};
+	
+
+	
 	[Serializable]
 	public ref class Floor {
 	public:
