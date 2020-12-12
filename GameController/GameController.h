@@ -1,4 +1,5 @@
 
+
 #pragma once
 #include <SFML/Graphics.hpp>
 #pragma make_public(sf::Clock)
@@ -18,6 +19,9 @@ namespace GameController {
 		static void LevelUp(Player^ player);
 		static void PickUP(Player^ player, Room^ room);
 		static int CompleteTutorial(int t[8]);
+		static void BossMove(Boss^ boss);
+		static void BossMove1(Boss^ boss, int* prob);
+		static void BossMove2(Boss^ boss, int* prob);
 	};
 	public ref class Interaction {
 	public:
@@ -28,6 +32,7 @@ namespace GameController {
 		static void UseItem(Player^ player);
 		static void GetHit(Player^ player, Trap^ trp,int *hit);
 		static void FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion, int* Hit);
+		static void FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit);
 	};
 	[Serializable]
 	public ref class PlayerDB {
