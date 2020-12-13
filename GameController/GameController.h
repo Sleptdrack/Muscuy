@@ -20,8 +20,8 @@ namespace GameController {
 		static void PickUP(Player^ player, Room^ room);
 		static int CompleteTutorial(int t[8]);
 		static void BossMove(Boss^ boss);
-		static void BossMove1(Boss^ boss, int* prob);
-		static void BossMove2(Boss^ boss, int* prob);
+		static void BossMove1(Boss^ boss, int* prob, int* prob_vel, int* prob10);
+		static void BossMove2(Boss^ boss, int* prob, int* prob_vel, int* prob10);
 	};
 	public ref class Interaction {
 	public:
