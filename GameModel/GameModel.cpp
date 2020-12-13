@@ -55,7 +55,7 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Size = size;
 	this->Attack = attack;
 	this->AttackSpeed = attackspeed;
-	this->Speed = 1+(rand() % 10)/10;
+	this->Speed = 1+(rand() % 10)/10 +1;
 	this->Type = type;
 	this->Wall = rand()%2;
 	this->Wally = rand() % 2;
