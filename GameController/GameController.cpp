@@ -409,14 +409,15 @@ void GameController::Action::BossMove1(Boss^ boss, int* prob, int *prob_vel, int
     }
 }
 
-void GameController::Action::BossMove2(Boss^ boss, int* prob)
+void GameController::Action::BossMove2(Boss^ boss, int* prob, int* prob_vel, int* prob10, int *typeb)
 {
 
+  if (*typeb == 0) {
 
     if (*prob == 0 || *prob == 1) {
         if (boss->Wall == 0) {
             if (boss->X >= Border) {
-                boss->X = boss->X - boss->Speed * 2;
+                boss->X = boss->X - boss->Speed - boss->Speed * *prob_vel;
             }
             else {
                 boss->Wall = 1;
@@ -424,7 +425,7 @@ void GameController::Action::BossMove2(Boss^ boss, int* prob)
         }
         else {
             if (boss->X < Border + Width - 40) {
-                boss->X = boss->X + boss->Speed * 2;
+                boss->X = boss->X + boss->Speed + boss->Speed * *prob_vel;
             }
             else {
                 boss->Wall = 0;
@@ -434,7 +435,7 @@ void GameController::Action::BossMove2(Boss^ boss, int* prob)
                 *prob = 45;
             }
         }
-        int prob3 = rand() % 400;
+        int prob3 = rand() % 1000;
         if (prob3 == 50) {
             if (boss->Wall == 1) {
                 boss->Wall = 0;
@@ -444,12 +445,52 @@ void GameController::Action::BossMove2(Boss^ boss, int* prob)
             }
         }
 
+        if (*prob10 == 0) {
+            *prob_vel = 0;
+            int prob3 = rand() % 1000;
+            if (prob3 == 150) {
+                *prob10 = 1;
+            }
+            if (prob3 == 160) {
+                *prob10 = 2;
+            }
+            if (prob3 == 121) {
+                *prob10 = 3;
+            }
+        }
+
+        if (*prob10 == 1) {
+            *prob_vel = 0.7;
+
+
+            int prob4 = rand() % 4000;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+        if (*prob10 == 2) {
+            *prob_vel = 2;
+
+            int prob4 = rand() % 4000;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+        if (*prob10 == 3) {
+            *prob_vel = 3;
+
+            int prob4 = rand() % 800;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+
     }
 
     if (*prob == 45) {
         if (boss->Wally == 0) {
             if (boss->Y >= Border) {
-                boss->Y = boss->Y - boss->Speed * 2;
+                boss->Y = boss->Y - boss->Speed - boss->Speed * *prob_vel;
             }
             else {
                 boss->Wally = 1;
@@ -457,17 +498,17 @@ void GameController::Action::BossMove2(Boss^ boss, int* prob)
         }
         else {
             if (boss->Y < Heigth - 50) {
-                boss->Y = boss->Y + boss->Speed * 2;
+                boss->Y = boss->Y + boss->Speed + boss->Speed * *prob_vel;
             }
             else {
                 boss->Wally = 0;
             }
+            int prob2 = rand() % 40;
+            if (prob2 == 35) {
+                *prob = 0;
+            }
         }
-        int prob2 = rand() % 40;
-        if (prob2 == 35) {
-            *prob = 0;
-        }
-        int prob4 = rand() % 180;
+        int prob4 = rand() % 900;
         if (prob4 == 50) {
             if (boss->Wally == 1) {
                 boss->Wally = 0;
@@ -477,8 +518,127 @@ void GameController::Action::BossMove2(Boss^ boss, int* prob)
             }
         }
 
+        if (*prob10 == 0) {
+            *prob_vel = 0;
+            int prob3 = rand() % 1000;
+            if (prob3 == 150) {
+                *prob10 = 1;
+            }
+            if (prob3 == 160) {
+                *prob10 = 2;
+
+            }
+            if (prob3 == 121) {
+                *prob10 = 3;
+            }
+        }
+
+        if (*prob10 == 1) {
+            *prob_vel = 0.7;
+
+
+            int prob4 = rand() % 4000;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+        if (*prob10 == 2) {
+            *prob_vel = 2;
+
+            int prob4 = rand() % 4000;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+        if (*prob10 == 3) {
+            *prob_vel = 3;
+
+            int prob4 = rand() % 800;
+            if (prob4 == 120) {
+                *prob10 = 0;
+            }
+        }
+
     }
-}
+    int prob6 = rand() % 500;
+    if (prob6 == 120) {
+        *typeb = 1;
+    }
+    if (prob6 == 124) {
+        *typeb = 2;
+    }
+  }
+  else {
+  
+   if (*typeb == 1) {
+      if (boss->Wall == 0) {
+          if (boss->X >= Border) {
+              boss->X -= boss->Speed;
+          }
+          else {
+              boss->Wall = 1;
+          }
+      }
+      else {
+          if (boss->X < Border + Width - 40) {
+              boss->X += boss->Speed;
+          }
+          else {
+              boss->Wall = 0;
+          }
+      }
+      if (boss->Wally == 0) {
+          if (boss->Y >= Border) {
+              boss->Y -= boss->Speed;
+
+          }
+          else {
+              boss->Wally = 1;
+          }
+      }
+      else {
+          if (boss->Y < Heigth - 50) {
+              boss->Y += boss->Speed;
+          }
+          else {
+              boss->Wally = 0;
+          }
+      }
+   }
+    if (*typeb == 2) {
+      boss->Y -= 1.5 * sin((boss->Wally) * 3.1416 / 180);
+      if (boss->Wally <= 360) {
+          boss->Wally += 1;
+      }
+      else {
+          boss->Wally = 0;
+      }
+      if (boss->Wall == 0) {
+          if (boss->X >= Border) {
+              boss->X -= boss->Speed;
+          }
+          else {
+              boss->Wall = 1;
+          }
+      }
+      else {
+          if (boss->X < Border + Width - 40) {
+              boss->X += boss->Speed;
+          }
+          else {
+              boss->Wall = 0;
+          }
+      }
+    }
+
+
+      int prob6 = rand() % 500;
+      if (prob6 == 120) {
+          *typeb = 0;
+      }
+
+   }
+}  
 
 void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
 {
