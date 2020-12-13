@@ -440,6 +440,7 @@ int main()
     int prob = 0;
     int prob10 = 0;
     int prob_vel = 0;
+    int typeb = 0;
     auto tp = std::chrono::steady_clock::now();
     float dt;
     Clock time2;
@@ -705,7 +706,7 @@ int main()
                     if (personaje->CurrentRoom == 3) {
 
                         for (int i = 0; i < 3; i++) {
-                            Action::BossMove1(floor->LRoom[personaje->CurrentRoom]->LBoss[i], &prob, &prob_vel, &prob10);
+                            Action::BossMove2(floor->LRoom[personaje->CurrentRoom]->LBoss[i], &prob, &prob_vel, &prob10, &typeb);
                             V_boss[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[i]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Y);
                             if (floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Health > 0) {
                                 Interaction::FightBoss(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LBoss[i], &m_hit2[i]);
