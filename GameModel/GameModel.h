@@ -85,6 +85,7 @@ namespace GameModel {
 	};
 
 	[Serializable]
+	[Serializable]
 	public ref class Boss {
 	public:
 		property int Health;
