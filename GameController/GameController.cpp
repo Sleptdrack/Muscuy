@@ -43,53 +43,67 @@ void GameController::Action::Move(Player^ player, int dir[2])
 }
 void GameController::Action::Hit(sf::Sprite &chain, sf::Clock &time, int *chainT)
 {
-    Time mili500 = milliseconds(500), mili1000 = milliseconds(1000);
+   Time mili500 = milliseconds(500), mili1000 = milliseconds(1000);
 
     if (*chainT == 0) {
 
         if (time.getElapsedTime() >= (mili500)) {
-            chain.scale(4, 1);
+            chain.scale(3.0f, 1.0f);
             time.restart();
+
+
             *chainT = 1;
+
         }
     }
     else if (*chainT == 1) {
         if (time.getElapsedTime() >= mili500) {
-            chain.scale(0.25, 1);
+            chain.scale(0.3f, 1.0f);
             time.restart();
             *chainT = 2;
 
+
         }
     }
+
+    
+
     //Direccion de la cadena
     if (Keyboard::isKeyPressed(Keyboard::Up)) {
         *chainT = 0;
         time.restart();
-        chain.setScale((float)0.05, (float)0.05);
+        chain.setScale((float)0.1, (float)0.3);
         chain.setRotation(0);
+
         chain.rotate(-90);
+
     }
     if (Keyboard::isKeyPressed(Keyboard::Down)) {
         *chainT = 0;
         time.restart();
-        chain.setScale((float)0.05, (float)0.05);
+        chain.setScale((float)0.1, (float)0.3);
         chain.setRotation(0);
+
         chain.rotate(90);
     }
     if (Keyboard::isKeyPressed(Keyboard::Right)) {
         *chainT = 0;
-        chain.setScale((float)0.05, (float)0.05);
+        chain.setScale((float)0.1, (float)0.3);
         chain.setRotation(0);
+
         time.restart();
     }
     if (Keyboard::isKeyPressed(Keyboard::Left)) {
         *chainT = 0;
         time.restart();
-        chain.setScale((float)0.05, (float)0.05);
+        chain.setScale((float)0.1, (float)0.3);
         chain.setRotation(0);
+
         chain.rotate(180);
     }
+
 }
+
 void GameController::Action::MinionMove(Minion^ minion)
 {
     if (minion->Type == 0) {
