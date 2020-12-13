@@ -30,10 +30,30 @@ namespace GameView {
 
 
         }
-        void ApplyToSprite(sf::Sprite& s)const
+        void ApplyToSprite(sf::Sprite& s, Player^ player)
+
         {
+            if (player->Health > 75)
+            {
+                texture.loadFromFile("Imagenes/main_character.png");
+            }
+            if ((player->Health <= 75) && (player->Health > 50))
+            {
+                texture.loadFromFile("Imagenes/main_character_75.png");
+            }
+            if ((player->Health <= 50) && (player->Health > 25))
+            {
+                texture.loadFromFile("Imagenes/main_character_50.png");
+            }
+            if ((player->Health <= 25) && (player->Health > 0))
+            {
+                texture.loadFromFile("Imagenes/main_character_25.png");
+            }
+
             s.setTexture(texture);
             s.setTextureRect(frames[iFrame]);
+
+
         }
         void Update(float dt)
         {
@@ -111,12 +131,11 @@ namespace GameView {
                 curAnimation = AnimationIndex::WalkingUp;
             }
         }
-        void Update(float dt)
+        void Update(float dt, Player^ player)
         {
             animations[int(curAnimation)].Update(dt);
-            animations[int(curAnimation)].ApplyToSprite(sprite);
+            animations[int(curAnimation)].ApplyToSprite(sprite, player);
         }
-
 
 
 
@@ -129,6 +148,133 @@ namespace GameView {
     public:
         sf::Sprite sprite;
     };
+
+    class Animation_boss
+    {
+    public:
+        Animation_boss() = default;
+        Animation_boss(int width, int height)
+        {
+            texture.loadFromFile("boss_1_vida100.png");
+
+            frames[0] = { 0, 0, width, height };
+            frames[1] = { 128, 0, width, height };
+            frames[2] = { 256, 0, width, height };
+            frames[3] = { 384, 0, width, height };
+            frames[4] = { 0, 128, width, height };
+            frames[5] = { 128, 128, width, height };
+            frames[6] = { 256, 128, width, height };
+            frames[7] = { 384, 128, width, height };
+        }
+
+        void ApplyToSprite(sf::Sprite& s, Boss^ boss)
+        {
+            if (boss->Health > 80)
+            {
+                texture.loadFromFile("Imagenes/boss_1_vida100.png");
+            }
+            if ((boss->Health <= 80) && (boss->Health > 60))
+            {
+                texture.loadFromFile("Imagenes/boss_1_vida80.png");
+            }
+            if ((boss->Health <= 60) && (boss->Health > 40))
+            {
+                texture.loadFromFile("Imagenes/boss_1_vida60.png");
+            }
+            if ((boss->Health <= 40) && (boss->Health > 20))
+            {
+                texture.loadFromFile("Imagenes/boss_1_vida40.png");
+            }
+            if ((boss->Health <= 20) && (boss->Health > 0))
+            {
+                texture.loadFromFile("Imagenes/boss_1_vida20.png");
+            }
+
+            s.setTexture(texture);
+            s.setTextureRect(frames[iFrame]);
+        }
+
+        void Update(float dt)
+        {
+            time += dt;
+            while (time >= holdTime)
+            {
+                time -= holdTime;
+                Advance();
+            }
+        }
+
+    private:
+        void Advance()
+        {
+            if (++iFrame >= nFrames)
+            {
+                iFrame = 0;
+            }
+        }
+
+    private:
+        //9 images for the character's movement
+        static constexpr int nFrames = 8;
+        static constexpr float holdTime = 0.1f;
+        sf::Texture texture;
+        sf::IntRect frames[nFrames];
+        int iFrame = 0;
+        float time = 0.0f;
+    };
+    class character_boss
+    {
+
+    private:
+        enum class AnimationIndex
+        {
+            Walking,
+            Count,
+        };
+
+    public:
+        character_boss(const sf::Vector2f& pos)
+            :
+            pos(pos)
+        {
+            sprite.setTextureRect({ 0,0,128,128 });
+            animations = Animation_boss(128, 128);
+
+        }
+        void Draw(sf::RenderTarget& rt)const
+        {
+            rt.draw(sprite);
+        }
+
+
+        void Update(float dt, Boss^ boss)
+        {
+            pos += vel * dt;
+
+            animations.Update(dt);
+            animations.ApplyToSprite(sprite, boss);
+
+            sprite.setPosition(pos);
+        }
+
+
+
+
+    private:
+        static constexpr float speed = 100.0f;
+        sf::Vector2f pos;
+        sf::Vector2f vel = { 0.0f,0.0f };
+        sf::Sprite sprite;
+        Animation_boss animations;
+
+    };
+
+    //lo invocas asi: character_boss boss({600.0f,300.0f});
+    // boss.Update(dt, personaje);; esto es para que se actualize la animacion 
+    // boss.Draw(window); esto es para el dibujo
+    // boss.sprite.setPosition(personaje->X, personaje->Y);
+
+
     class Item {
     public:
         sf::Sprite sprite;
@@ -292,6 +438,8 @@ int main()
     GameView::ItemVelocity V;
     int state = 0,InPause=0,id=0;
     int prob = 0;
+    int prob10 = 0;
+    int prob_vel = 0;
     auto tp = std::chrono::steady_clock::now();
     float dt;
     Clock time2;
@@ -367,6 +515,12 @@ int main()
     T_boss2.loadFromFile("Imagenes/boss_100.png");
     int boss_dead2[10];
     //
+    //lo invocas asi: character_boss boss({600.0f,300.0f});
+    // boss.Update(dt, personaje);; esto es para que se actualize la animacion 
+    // boss.Draw(window); esto es para el dibujo
+    // boss.sprite.setPosition(personaje->X, personaje->Y);
+    
+
     int pared=0,pared1=0,amount=5;
     int minion_dead[10];
     int m_hit[10];
@@ -399,9 +553,13 @@ int main()
 
     Boss^ boss = gcnew Boss(100, 100, 140, 100, 0, 0, 1);
     Floor^ floor = gcnew Floor(boss);
+
+
+
     //
+    /*
     int Done = 0;
-    Player^ personaje= gcnew Player(0,100, 140, 140, 20, 1, 1, 0, 1);
+   Player^ personaje= gcnew Player(0,100, 140, 140, 20, 1, 1, 0, 1);
     GameView::Character VP({ 140.f,140.f });
     Sprite chain;
     Texture tchain;
@@ -409,6 +567,18 @@ int main()
     tchain.loadFromFile("Imagenes/chain.png");
     chain.setTexture(tchain);
     chain.setScale((float)0.05, (float)0.05);
+    */
+    int Done = 0;
+    Player^ personaje = gcnew Player(0, 100, 140, 140, 20, 1, 1, 0, 1);
+    GameView::Character VP({ 140.f,140.f });
+    Sprite chain;
+    Texture tchain;
+    FloatRect Rect_chain;
+    tchain.loadFromFile("Imagenes/cadena_normal_7.png");
+    chain.setTexture(tchain);
+    chain.setTextureRect({ 0,186,576,70 });
+    chain.setScale(0.10f, 0.30f);
+
     //
     Sonido.play();
     while (window.isOpen())
@@ -505,6 +675,9 @@ int main()
                     Exp.UpdateString(expp.replace(5, 3, std::to_string(personaje->Exp)));
                     Level.UpdateString(level.replace(7, 3, std::to_string(personaje->Level)));
                     FP.UpdateString(fp.replace(13, 3, std::to_string(personaje->CurrentRoom+1)));
+
+                   
+
                     if (floor->LRoom[0]->LMinion[0]->Y>= ver) {
                         ver = floor->LRoom[0]->LMinion[0]->Y;
                     }
@@ -532,7 +705,7 @@ int main()
                     if (personaje->CurrentRoom == 3) {
 
                         for (int i = 0; i < 3; i++) {
-                            Action::BossMove1(floor->LRoom[personaje->CurrentRoom]->LBoss[i], &prob);
+                            Action::BossMove1(floor->LRoom[personaje->CurrentRoom]->LBoss[i], &prob, &prob_vel, &prob10);
                             V_boss[i].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[i]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Y);
                             if (floor->LRoom[personaje->CurrentRoom]->LBoss[i]->Health > 0) {
                                 Interaction::FightBoss(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LBoss[i], &m_hit2[i]);
@@ -548,7 +721,7 @@ int main()
                     //NUEVO2
                     if (personaje->CurrentRoom == 8) {
 
-                        Action::BossMove2(floor->LRoom[personaje->CurrentRoom]->LBoss[3],&prob);
+                        Action::BossMove1(floor->LRoom[personaje->CurrentRoom]->LBoss[3],&prob, & prob_vel, &prob10);
                         V_boss[3].setPosition(floor->LRoom[personaje->CurrentRoom]->LBoss[3]->X, floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Y);
                         if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 0) {
                             Interaction::FightBoss(personaje, chain, floor->LRoom[personaje->CurrentRoom]->LBoss[3], &m_hit3[3]);
@@ -573,11 +746,11 @@ int main()
                     //Movimiento del personaje y correspondiente Sprite
                     Action::Move(personaje, dir);
                     VP.SetDirection(dir);
-                    VP.Update(dt);
+                    VP.Update(dt, personaje);
                     VP.sprite.setPosition(personaje->X, personaje->Y);
                     //
                     //Accion de la cadena
-                    chain.setPosition(personaje->X, personaje->Y);
+                    chain.setPosition((personaje->X) + 32, (personaje->Y) + 32);
                     Rect_chain = chain.getGlobalBounds();
                     Action::Hit(chain, time, &chainT);
                     //
@@ -708,11 +881,11 @@ int main()
             //Movimiento del personaje y correspondiente Sprite
             Action::Move(personaje, dir);
             VP.SetDirection(dir);
-            VP.Update(dt);
+            VP.Update(dt, personaje);
             VP.sprite.setPosition(personaje->X, personaje->Y);
             //
             //Accion de la cadena
-            chain.setPosition(personaje->X, personaje->Y);
+            chain.setPosition((personaje->X) + 32, (personaje->Y) + 32);
             Rect_chain = chain.getGlobalBounds();
             Action::Hit(chain, time, &chainT);
             //
