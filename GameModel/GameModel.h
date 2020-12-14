@@ -83,8 +83,6 @@ namespace GameModel {
 		property int Wally;
 		Minion(int health, float x, float y,float size,int attack, double attackspeed, int type);
 	};
-
-	[Serializable]
 	[Serializable]
 	public ref class Boss {
 	public:

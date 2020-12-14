@@ -578,7 +578,7 @@ int main()
     tchain.loadFromFile("Imagenes/cadena_normal_7.png");
     chain.setTexture(tchain);
     chain.setTextureRect({ 0,186,576,70 });
-    chain.setScale(0.10f, 0.30f);
+    chain.setScale(0.1, 0.3);
 
     //
     Sonido.play();
