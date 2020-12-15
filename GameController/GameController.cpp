@@ -172,10 +172,10 @@ void GameController::Action::MinionMove(Minion^ minion)
 }
 void GameController::Action::LevelUp(Player^ player)
 {
-    if (player->Exp == 100) {
+    if (player->Exp >= 100) {
         player->Level += 1;
         player->Health += 20;
-        player->Exp = 0;
+        player->Exp -= 100;
     }
 }
 void GameController::Action::PickUP(Player^ player, Room^ room)
