@@ -488,8 +488,8 @@ int main()
     GameView::Word LiveBoss(healthboss, 450, 600);
 
     GameView::Word LiveWorm1(healthboss, 100, 650);
-    GameView::Word LiveWorm2(healthboss, 300, 650);
-    GameView::Word LiveWorm3(healthboss, 500, 650);
+    GameView::Word LiveWorm2(healthboss, 400, 650);
+    GameView::Word LiveWorm3(healthboss, 700, 650);
 
     //
     Title.Size(100);
