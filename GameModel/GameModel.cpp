@@ -31,9 +31,9 @@ void GameModel::Player::Reset()
 	this->Health = 100;
 	this->X=140;
 	this->Y=140;
-	this->Attack = 20;
+	this->Attack = 1;
 	this->AttackSpeed = 1;
-	this->Speed = 1;
+	this->Speed = 1.5;
 	this->Exp = 0;
 	this->Level = 1;
 	this->CurrentRoom = 0;
@@ -55,7 +55,7 @@ GameModel::Minion::Minion(int health, float x, float y,float size,int attack, do
 	this->Size = size;
 	this->Attack = attack;
 	this->AttackSpeed = attackspeed;
-	this->Speed = 1;
+	this->Speed = 2;
 	this->Type = type;
 	this->Wall = rand()%2;
 	this->Wally = rand() % 2;
