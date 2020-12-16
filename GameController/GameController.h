@@ -32,7 +32,7 @@ namespace GameController {
 		static void UseItem(Player^ player);
 		static void GetHit(Player^ player, Trap^ trp,int *hit);
 		static void FightMinion(Player^ player, sf::Sprite& chain, Minion^ minion, int* Hit);
-		static void FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit);
+		static void FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit, int* flag_hit);
 	};
 	[Serializable]
 	public ref class PlayerDB {
