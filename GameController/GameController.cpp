@@ -680,20 +680,25 @@ void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
         desfase = 0;
     }
     for (int i = 0; i < 10; i++) {
-        Trap^ trp = gcnew Trap((float)Border+ rand()%Width, (float)Border+rand() % (Heigth-(Border+50)), 40, 20);
+        Trap^ trp = gcnew Trap((float)((rand() % 10)) * 110 + 140, (float)((rand() % (7)) * 80) + Border, 40, 20);
+        //Trap^ trp = gcnew Trap((float)Border+ rand()%Width, (float)Border+rand() % (Heigth-(Border+50)), 40, 20);
         Room->LTrap->Add(trp);
     }
+
     for (int i = 0; i < amount; i++) {
-        Minion^ minion = gcnew Minion(100, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, type);
+        Minion^ minion = gcnew Minion(5, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, type);
         Room->LMinion->Add(minion);
     }
 
     //NUEVOO
-    for (int i = 0; i < 4; i++) {
-        Boss^ boss = gcnew Boss(500, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 1);
+    for (int i = 0; i < 3; i++) {
+        Boss^ boss = gcnew Boss(200, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 1);
         Room->LBoss->Add(boss);
     }
+    Boss^ boss = gcnew Boss(999, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 3);
+    Room->LBoss->Add(boss);
     //
+
 
 
     for (int i = 0; i < 5; i++) {
@@ -803,12 +808,19 @@ void GameController::Interaction::FightMinion(Player^ player, sf::Sprite& chain,
             *Hit = 0;
         }
     }
-    if (chain.getGlobalBounds().contains(minion->X, minion->Y) && !((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size)))) {
-        minion->Health -= player->Attack;
-    }
+    //if (chain.getGlobalBounds().contains(minion->X, minion->Y) && !((player->X < (minion->X + minion->Size) && player->X >(minion->X - minion->Size)) && (player->Y < (minion->Y + minion->Size) && player->Y >(minion->Y - minion->Size)))) {
+      //  minion->Health -= player->Attack;
+    //}
+    int i = 0;
+    do {
+        if (chain.getGlobalBounds().contains((minion->X) + i, (minion->Y) + i)) {
+            minion->Health -= player->Attack;
+        }
+        i++;
+    } while (i <= minion->Size);
 }
 
-void GameController::Interaction::FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit)
+void GameController::Interaction::FightBoss(Player^ player, sf::Sprite& chain, Boss^ boss, int* hit, int * flag_hit)
 {
     if ((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size))) {
         if (*hit == 0) {
@@ -822,9 +834,30 @@ void GameController::Interaction::FightBoss(Player^ player, sf::Sprite& chain, B
             *hit = 0;
         }
     }
-    if (chain.getGlobalBounds().contains(boss->X, boss->Y) && !((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size)))) {
-        boss->Health -= player->Attack;
-    }
+    //if (*flag_hit==2) {
+      //  if (chain.getGlobalBounds().contains(boss->X, boss->Y) && !((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size)))) {
+       //     boss->Health -= player->Attack;
+        //}
+        //*flag_hit++;
+        //if (*flag_hit == 100) {
+         //   *flag_hit = 2;
+        //}
+    //}
+    
+    //SSS
+    int i = 0;
+    *flag_hit = 2;
+    do {
+        if ((chain.getGlobalBounds().contains((boss->X) + i, (boss->Y) + i)) && *flag_hit == 2 && !((player->X < (boss->X + boss->Size) && player->X >(boss->X - boss->Size)) && (player->Y < (boss->Y + boss->Size) && player->Y >(boss->Y - boss->Size)))) {
+            //boss->Health -= player->Attack;
+            boss->Health = boss->Health - 0.1- player->Attack/500 ;
+            *flag_hit++;
+        }
+        i++;
+    } while (i <= boss->Size);
+   
+    
+
 }
 
 
