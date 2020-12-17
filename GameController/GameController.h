@@ -2,6 +2,7 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
+//#include "ConnectionParam.h"
 #pragma make_public(sf::Clock)
 #pragma make_public(sf::Sprite)
 using namespace System;
@@ -50,6 +51,7 @@ namespace GameController {
 	public:
 		static PlayerDB^ playerDB = gcnew PlayerDB();
 		static FloorDB^ floorDB = gcnew FloorDB();
+		//static ConnectionParam^ connParam;
 	public:
 		static void SavePlayer();
 		static void SaveFloor();
@@ -60,8 +62,24 @@ namespace GameController {
 		static void LoadFloor();
 		static void LoadGame(int id, Player^ player, Floor^ floor);
 		//static SqlConnection^ GetConnection();
+		//static void Init();
 		//static void SavePlayerDB (Player^ player);
 		//static Player^ LoadPlayerDB(int id);
+		/*#pragma once va en un ConnectionParam.h
+using namespace System;
+
+namespace SalesController {
+	[Serializable]
+	public ref class ConnectionParam
+	{
+	public:
+		property String^ server;
+		property String^ database;
+		property String^ user;
+		property String^ password;
+	};
+
+}*/
 
 	};
 }
