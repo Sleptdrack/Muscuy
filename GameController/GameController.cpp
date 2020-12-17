@@ -940,20 +940,66 @@ void GameController::DB::LoadGame(int id,Player^ player,Floor^ room)
 /*SqlConnection^ GameController::DB::GetConnection()
 {
 	SqlConnection^ conn = gcnew SqlConnection();
-	String^ strConn = "Server=muscuy.cjvxsxw5p3iw.us-east-1.rds.amazonaws.com;" +
-		"Database=muscuy;User ID=admin;Password=lpooadmin";
+	String^ strConn = "Server="+connParam->server +
+		";Database=" + connParam->database + ";User ID=" + connParam->user + 
+		";Password=" + connParam->password;
 	conn->ConnectionString = strConn;
 	conn->Open();
 	return conn;
 }
 
+
 void GameController::DB::SavePlayerDB(Player^ player)
 {
 	SqlConnection^ conn = GetConnection();
-	SqlCommand^ comm = gcnew SqlCommand();
-	comm->Connection = conn;
-	comm->CommandText = "Update Player set id ='"+player ->Id+"',health= '"+player ->Health+"',x='"+player ->X+"',y='"+player ->Y+"',attack='"+player ->Attack+"',attackspeed='"+player ->AttackSpeed+"',speed='"+player ->Speed+"',expe='"+player ->Exp+"',llevel='"+player ->Level+"',furypoints='"+player ->Furypoints+"',currentroom='"+player ->CurrentRoom+"'");
+	SqlCommand^ comm;
+	String^ strCmd;
+	strCmd = "dbo.usp_UpdatePlayer";
+	comm = gcnew SqlCommand(strCmd, conn);
+	comm->CommandType = System::Data::CommandType::PlayerProcedure;
+	comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+	comm->Parameters->Add("@health", System::Data::SqlDbType::Int);
+	comm->Parameters->Add("@x", System::Data::SqlDbType::Float);
+	comm->Parameters->Add("@y", System::Data::SqlDbType::Float);
+	comm->Parameters->Add("@attack", System::Data::SqlDbType::Double);
+	comm->Parameters->Add("@attackspeed", System::Data::SqlDbType::Double);
+	comm->Parameters->Add("@speed", System::Data::SqlDbType::Float);
+	comm->Parameters->Add("@expe", System::Data::SqlDbType::Int);
+	comm->Parameters->Add("@llevel", System::Data::SqlDbType::Int);
+	comm->Parameters->Add("@furypoints", System::Data::SqlDbType::Int);
+	comm->Parameters->Add("@currentroom", System::Data::SqlDbType::Int);
+	comm->Prepare();
+
+	comm->Parameters["@id"]->Value = player->Id;
+	comm->Parameters["@health"]->Value = player->Health;
+	comm->Parameters["@x"]->Value = player->X;
+	comm->Parameters["@y"]->Value = player->Y;
+	comm->Parameters["@attack"]->Value = player->Attack;
+	comm->Parameters["@attackspeed"]->Value = player->AttackSpeed;
+	comm->Parameters["@speed"]->Value = player->Speed;
+	comm->Parameters["@expe"]->Value = player->Exp;
+	comm->Parameters["@llevel"]->Value = player->Level;
+	comm->Parameters["@furypoints"]->Value = player->FuryPoints;
+	comm->Parameters["@currentroom"]->Value = player->CurrentRoom;
+
 	comm->ExecuteNonQuery();
+	conn->Close();
+}
+
+void GameController::DB::Init()
+{
+	XmlSerializer^ reader = gcnew XmlSerializer(ConnectionParam::typeid);
+	StreamReader^ file = nullptr;
+
+	try {
+		file = gcnew StreamReader("init.xml");
+		connParam = (ConnectionParam^)reader->Deserialize(file);
+	}
+	catch (...) {
+	}
+	finally {
+		if (file != nullptr) file->Close();
+	}
 }
 
 Player^ GameController::DB::LoadPlayerDB(int id) {
