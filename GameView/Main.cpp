@@ -485,7 +485,7 @@ int main()
     GameView::Word StartNew("Start New Game", 500, 400);
     GameView::Word LoadGame("Load Game", 525, 450);
     //SSS
-    GameView::Word LiveBoss(healthboss, 450, 600);
+    GameView::Word LiveBoss(healthboss, 100, 670);
 
     GameView::Word LiveWorm1(healthboss, 100, 650);
     GameView::Word LiveWorm2(healthboss, 400, 650);
@@ -511,6 +511,13 @@ int main()
     RectangleShape Door(Vector2f(20, 100));
     Door.setFillColor(Color::Black);
     Door.setPosition(Width+Border, 335);
+    
+    RectangleShape LiveFinalBoss(Vector2f(750, 20));
+
+    LiveFinalBoss.setFillColor(Color::Green);
+
+    LiveFinalBoss.setPosition(250, 650);
+    
     int Tutorial[8],ver=0,base=1000;
     for (int p = 0; p < 8; p++) {
         Tutorial[p] = 1;
@@ -876,6 +883,136 @@ int main()
                     //SSS
                     if (personaje->CurrentRoom == 8) {
                         window.draw(LiveBoss.text);
+                        if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 950) {
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 900) {
+                            RectangleShape LiveFinalBoss(Vector2f(710, 20));
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 850) {
+                            RectangleShape LiveFinalBoss(Vector2f(670, 20));
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 800) {
+                            RectangleShape LiveFinalBoss(Vector2f(630, 20));
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 750) {
+                            RectangleShape LiveFinalBoss(Vector2f(590, 20));
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 700) {
+                            RectangleShape LiveFinalBoss(Vector2f(550, 20));
+                            LiveFinalBoss.setFillColor(Color::Green);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 650) {
+                            RectangleShape LiveFinalBoss(Vector2f(510, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 600) {
+                            RectangleShape LiveFinalBoss(Vector2f(470, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 550) {
+                            RectangleShape LiveFinalBoss(Vector2f(430, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 500) {
+                            RectangleShape LiveFinalBoss(Vector2f(390, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 450) {
+                            RectangleShape LiveFinalBoss(Vector2f(350, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 400) {
+                            RectangleShape LiveFinalBoss(Vector2f(310, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 350) {
+                            RectangleShape LiveFinalBoss(Vector2f(270, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 300) {
+                            RectangleShape LiveFinalBoss(Vector2f(230, 20));
+                            LiveFinalBoss.setFillColor(Color::Magenta);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 250) {
+                            RectangleShape LiveFinalBoss(Vector2f(190, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 200) {
+                            RectangleShape LiveFinalBoss(Vector2f(150, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 150) {
+                            RectangleShape LiveFinalBoss(Vector2f(110, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 100) {
+                            RectangleShape LiveFinalBoss(Vector2f(75, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 50) {
+                            RectangleShape LiveFinalBoss(Vector2f(45, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+                        else if (floor->LRoom[personaje->CurrentRoom]->LBoss[3]->Health > 0) {
+                            RectangleShape LiveFinalBoss(Vector2f(10, 20));
+                            LiveFinalBoss.setFillColor(Color::Red);
+                            LiveFinalBoss.setPosition(250, 650);
+                            window.draw(LiveFinalBoss);
+
+                        }
+
                     }
                     
                     if (personaje->CurrentRoom == 4) {
