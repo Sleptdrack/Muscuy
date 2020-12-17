@@ -692,7 +692,7 @@ void GameController::Interaction::InizialiceRoom(Room^ Room,int Number)
 
     //NUEVOO
     for (int i = 0; i < 3; i++) {
-        Boss^ boss = gcnew Boss(200, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 1);
+        Boss^ boss = gcnew Boss(50, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 1);
         Room->LBoss->Add(boss);
     }
     Boss^ boss = gcnew Boss(999, (float)Border + rand() % Width, (float)Border + desfase + rand() % (Heigth - (Border + 50 + desfase)), 40, 20, 0, 3);
